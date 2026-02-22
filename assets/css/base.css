@@ -3,6 +3,8 @@
    Aegis Martin Portfolio
    ═══════════════════════════════════════════════════════════ */
 
+body { visibility: hidden; } /*avoid partial loading*/
+
 /* ── VARIABLES ─────────────────────────────────────────────── */
 :root {
     --bg-primary:          #0a0a0a;
@@ -902,3 +904,5 @@ body.nav-open {
         padding: 5rem 1.5rem 2rem;
     }
 }
+
+body { visibility: visible; } /*load fully*/

@@ -1,0 +1,825 @@
+/* ═══════════════════════════════════════════════════════════
+   ARTICLES.CSS — Articles page specific styles
+   Aegis Martin Portfolio
+   ═══════════════════════════════════════════════════════════ */
+
+@import './base.css';
+
+/* ── HERO BANNER ────────────────────────────────────────────── */
+.hero-banner {
+    position: relative;
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.banner-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(135deg, rgba(168,85,247,0.08) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(59,130,246,0.05) 0%, transparent 50%);
+    z-index: -1;
+}
+
+.banner-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 100px 100px;
+    opacity: 0.15;
+    animation: grid-slide 30s linear infinite;
+}
+
+.banner-content {
+    max-width: var(--container-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--container-padding);
+    z-index: 1;
+}
+
+.banner-inner {
+    max-width: 900px;
+}
+
+.banner-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.7s ease 0.1s backwards;
+}
+
+.label-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent-purple-glow);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.banner-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -1px;
+    margin-bottom: 3rem;
+}
+
+.banner-title-line {
+    display: block;
+    animation: fadeUp 0.7s ease backwards;
+}
+
+.banner-title-line:nth-child(1) { animation-delay: 0.2s; }
+.banner-title-line:nth-child(2) { animation-delay: 0.3s; }
+.banner-title-line:nth-child(3) { animation-delay: 0.4s; }
+.banner-title-line:nth-child(4) { animation-delay: 0.5s; }
+
+.title-emphasis {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.banner-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    animation: fadeUp 0.7s ease 0.6s backwards;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.stat-value {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border-color);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.scroll-indicator svg {
+    width: 28px;
+    height: 28px;
+    color: var(--text-muted);
+}
+
+/* ── FILTER TOOLBAR ─────────────────────────────────────────── */
+.filter-toolbar {
+    position: relative;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 0 0.75rem;
+    z-index: 2;
+}
+
+.toolbar-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--container-padding);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.toolbar-left  { min-width: 0; }
+.toolbar-right { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex-shrink: 1; }
+
+/* ── CUSTOM SELECT DROPDOWN ─────────────────────────────────── */
+.csel {
+    position: relative;
+}
+
+/* The clickable trigger button */
+.csel-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.csel-trigger:hover,
+.csel.open .csel-trigger {
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
+    box-shadow: 0 0 12px var(--accent-purple-glow);
+}
+
+/* Colored indicator dot inside the trigger */
+.csel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.csel-dot.all         { background: var(--accent-purple); box-shadow: 0 0 6px var(--accent-purple-glow); }
+.csel-dot.methodology { background: var(--accent-pink);   box-shadow: 0 0 6px rgba(236,72,153,0.4); }
+.csel-dot.exploring   { background: var(--accent-blue);   box-shadow: 0 0 6px rgba(59,130,246,0.4); }
+.csel-dot.developer   { background: var(--accent-green);  box-shadow: 0 0 6px rgba(16,185,129,0.4); }
+.csel-dot.owasp       { background: var(--accent-purple); box-shadow: 0 0 6px var(--accent-purple-glow); }
+.csel-dot.tag         { background: var(--accent-orange); box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+
+/* Chevron */
+.csel-chevron {
+    width: 13px;
+    height: 13px;
+    margin-left: 0.15rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.csel.open .csel-chevron {
+    transform: rotate(180deg);
+}
+
+/* Dropdown panel */
+.csel-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 100%;
+    list-style: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.35rem;
+    z-index: 200;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(168,85,247,0.08);
+    /* hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.csel-panel::-webkit-scrollbar { width: 4px; }
+.csel-panel::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.csel.open .csel-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s;
+}
+
+/* Anchor tag panel to the right so it never clips off-screen */
+.csel-panel--right {
+    left: auto;
+    right: 0;
+}
+
+/* Individual option row */
+.csel-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.85rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.csel-option:hover {
+    background: rgba(168,85,247,0.08);
+    color: var(--text-primary);
+}
+
+.csel-option.active {
+    color: var(--text-primary);
+    background: rgba(168,85,247,0.1);
+}
+
+/* Colored dot inside each option */
+.csel-opt-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.csel-opt-dot.all         { background: var(--text-muted); }
+.csel-opt-dot.methodology { background: var(--accent-pink); }
+.csel-opt-dot.exploring   { background: var(--accent-blue); }
+.csel-opt-dot.developer   { background: var(--accent-green); }
+.csel-opt-dot.owasp       { background: var(--accent-purple); }
+.csel-opt-dot.tag         { background: var(--accent-orange); }
+
+.sort-toggle {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: 0.6rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sort-toggle svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.sort-toggle:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    box-shadow: 0 0 12px var(--accent-purple-glow);
+}
+
+.sort-toggle.asc svg {
+    transform: rotate(180deg);
+}
+
+.results-bar {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 1rem 3rem 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.results-bar span {
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+/* ── ARTICLES GRID ──────────────────────────────────────────── */
+.articles-main {
+    position: relative;
+    padding: 4rem 0 6rem;
+    z-index: 1;
+}
+
+.articles-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--container-padding);
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2.5rem 2rem;
+}
+
+.art-card {
+    animation: fadeUp 0.6s ease backwards;
+}
+
+.art-card:nth-child(1) { animation-delay: 0.05s; }
+.art-card:nth-child(2) { animation-delay: 0.10s; }
+.art-card:nth-child(3) { animation-delay: 0.15s; }
+.art-card:nth-child(4) { animation-delay: 0.20s; }
+.art-card:nth-child(5) { animation-delay: 0.25s; }
+.art-card:nth-child(6) { animation-delay: 0.30s; }
+.art-card:nth-child(7) { animation-delay: 0.35s; }
+.art-card:nth-child(8) { animation-delay: 0.40s; }
+
+.art-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.art-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: var(--bg-tertiary);
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+}
+
+.art-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.art-card:hover .art-visual img {
+    transform: scale(1.08);
+}
+
+.art-placeholder {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+}
+
+.placeholder-icon {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    opacity: 0.3;
+}
+
+.art-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.art-card:hover .art-overlay {
+    opacity: 1;
+}
+
+.series-tag {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.art-card:hover .series-tag {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.series-tag.methodology { background: rgba(236, 72, 153, 0.9); color: #fff; }
+.series-tag.exploring   { background: rgba(59, 130, 246, 0.9); color: #fff; }
+.series-tag.developer   { background: rgba(34, 197, 94, 0.9);  color: #fff; }
+.series-tag.owasp       { background: rgba(168, 85, 247, 0.9); color: #fff; }
+
+.art-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.art-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.3;
+    transition: color 0.25s ease;
+}
+
+.art-card:hover .art-title {
+    color: var(--accent-purple);
+}
+
+.art-excerpt {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.art-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.art-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.art-tags span {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.art-card:hover .art-tags span {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.art-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* ── NO RESULTS ─────────────────────────────────────────────── */
+.no-results {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 6rem 2rem;
+    text-align: center;
+}
+
+.no-results-icon svg {
+    width: 60px;
+    height: 60px;
+    color: var(--text-muted);
+    opacity: 0.3;
+}
+
+.no-results-text {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+}
+
+.reset-btn {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.25s ease;
+}
+
+.reset-btn:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    box-shadow: 0 0 12px var(--accent-purple-glow);
+}
+
+/* ── KEYFRAMES ARTICLES-SPECIFIC ────────────────────────────── */
+@keyframes grid-slide {
+    from { background-position: 0 0;         }
+    to   { background-position: 100px 100px; }
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1);   }
+    50%       { opacity: 0.6; transform: scale(1.2); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translate(-50%, 0);    }
+    50%       { transform: translate(-50%, 10px); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE — ARTICLES PAGE (articles.css)
+   Breakpoints: 1280 | 1024 | 768 | 640 | 480 | 380
+   ════════════════════════════════════════════════════════════ */
+
+/* ── 1280px : Large desktop ───────────────────────────────── */
+@media (max-width: 1280px) {
+    .articles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    .banner-inner {
+        max-width: 780px;
+    }
+}
+
+/* ── 1024px : Tablet landscape ───────────────────────────── */
+@media (max-width: 1024px) {
+    .articles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem 1.75rem;
+    }
+
+    .hero-banner {
+        min-height: 60vh;
+    }
+
+    .banner-title {
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        margin-bottom: 2.25rem;
+    }
+}
+
+/* ── 768px : Tablet portrait ─────────────────────────────── */
+@media (max-width: 768px) {
+    .results-bar {
+        padding: 1rem 1.5rem 0;
+    }
+
+    .banner-stats-row {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .stat-divider {
+        display: none;
+    }
+
+    .articles-grid {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+
+    .hero-banner {
+        min-height: 55vh;
+        padding-top: 80px;
+    }
+
+    .banner-label {
+        margin-bottom: 1.5rem;
+    }
+
+    .banner-title {
+        margin-bottom: 2rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .art-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* ── 640px : Mobile ──────────────────────────────────────── */
+@media (max-width: 640px) {
+    .hero-banner {
+        min-height: 50vh;
+    }
+
+    .banner-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+        letter-spacing: -0.5px;
+    }
+
+    .banner-inner {
+        max-width: 100%;
+    }
+
+    .scroll-indicator {
+        bottom: 1.5rem;
+    }
+
+    .articles-main {
+        padding: 3rem 0 4rem;
+    }
+
+    .art-visual {
+        aspect-ratio: 16/9;
+        margin-bottom: 1rem;
+    }
+
+    .art-body {
+        gap: 0.65rem;
+    }
+
+    .art-excerpt {
+        font-size: 0.88rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Tighten trigger labels on small screens */
+    .csel-trigger {
+        font-size: 0.68rem;
+        padding: 0.55rem 0.8rem;
+    }
+}
+
+/* ── 480px : Small phones ────────────────────────────────── */
+@media (max-width: 480px) {
+    .banner-title {
+        font-size: clamp(1.75rem, 9vw, 2.5rem);
+    }
+
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .stat-label {
+        font-size: 0.62rem;
+    }
+
+    .results-bar {
+        padding: 0.75rem 1.25rem 0;
+        font-size: 0.7rem;
+    }
+
+    .art-title {
+        font-size: 1.1rem;
+    }
+
+    .art-tags span {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    /* ── Two-row toolbar — the only layout that fits at 320–480px ── */
+    /* Row 1: series dropdown spans full width                        */
+    /* Row 2: tag dropdown + sort toggle side by side, full width     */
+    .toolbar-container {
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .toolbar-left {
+        width: 100%;
+    }
+
+    /* Series trigger fills its full row */
+    .toolbar-left .csel,
+    .toolbar-left .csel-trigger {
+        width: 100%;
+    }
+
+    .toolbar-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.6rem;
+    }
+
+    /* Tag dropdown grows to fill remaining space before sort */
+    .toolbar-right .csel {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .toolbar-right .csel-trigger {
+        width: 100%;
+    }
+
+    /* Tag panel still anchors right so it doesn't clip */
+    .toolbar-right .csel-panel {
+        left: 0;
+        right: auto;
+        min-width: 100%;
+    }
+
+    /* Sort toggle fixed size, doesn't grow */
+    .sort-toggle {
+        flex-shrink: 0;
+        font-size: 0.68rem;
+        padding: 0.55rem 0.85rem;
+    }
+}
+
+/* ── 380px : Tiny phones ─────────────────────────────────── */
+@media (max-width: 380px) {
+    .banner-title {
+        font-size: clamp(1.6rem, 10vw, 2rem);
+    }
+
+    .art-title {
+        font-size: 1rem;
+    }
+
+    .sort-toggle {
+        font-size: 0.7rem;
+        padding: 0.55rem 0.85rem;
+    }
+}

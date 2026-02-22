@@ -1,0 +1,128 @@
+<svg width="1300" height="820" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1300" height="820" fill="#0a0a0a"/>
+  <rect width="1300" height="820" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <line x1="80" y1="55" x2="1220" y2="55" stroke="#333" stroke-width="1"/>
+  <text x="650" y="38" fill="#e5e5e5" font-size="22" font-weight="bold" text-anchor="middle" letter-spacing="6">SECURITY HEADERS AUDIT — RESPONSE ANALYSIS</text>
+  <line x1="80" y1="65" x2="1220" y2="65" stroke="#333" stroke-width="1"/>
+  <text x="650" y="90" fill="#555" font-size="11" text-anchor="middle" letter-spacing="3">MISSING SECURITY HEADERS = ATTACK SURFACE EXPOSED</text>
+
+  <!-- COLUMN HEADERS -->
+  <!-- Left: DVWA -->
+  <rect x="80" y="108" width="540" height="44" rx="2" fill="#1a0505" stroke="#5a1a1a" stroke-width="1.5"/>
+  <text x="350" y="127" fill="#ef4444" font-size="10" text-anchor="middle" letter-spacing="4">TARGET</text>
+  <text x="350" y="144" fill="#ef4444" font-size="15" font-weight="bold" text-anchor="middle">DVWA — localhost:8081</text>
+
+  <!-- Right: httpbin -->
+  <rect x="680" y="108" width="540" height="44" rx="2" fill="#0a1a0a" stroke="#1a5a1a" stroke-width="1.5"/>
+  <text x="950" y="127" fill="#4ade80" font-size="10" text-anchor="middle" letter-spacing="4">COMPARISON</text>
+  <text x="950" y="144" fill="#4ade80" font-size="15" font-weight="bold" text-anchor="middle">httpbin.org — production</text>
+
+  <!-- Column divider -->
+  <line x1="640" y1="108" x2="640" y2="720" stroke="#222" stroke-width="1.5"/>
+
+  <!-- ===== ROW 1: Server header ===== -->
+  <line x1="80" y1="170" x2="1220" y2="170" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="186" fill="#555" font-size="9" letter-spacing="3">SERVER IDENTIFICATION</text>
+
+  <rect x="80" y="193" width="540" height="52" rx="2" fill="#0d0505" stroke="#2a0a0a" stroke-width="1"/>
+  <text x="96" y="212" fill="#ef4444" font-size="11">Server: Apache/2.4.25 (Debian)</text>
+  <text x="96" y="230" fill="#888" font-size="10">X-Powered-By: PHP/7.0.33</text>
+  <rect x="496" y="198" width="118" height="20" rx="2" fill="#3a0a0a"/>
+  <text x="555" y="212" fill="#ef4444" font-size="10" text-anchor="middle" letter-spacing="1">VERSION EXPOSED</text>
+
+  <rect x="680" y="193" width="540" height="52" rx="2" fill="#0a120a" stroke="#1a2a1a" stroke-width="1"/>
+  <text x="696" y="212" fill="#4ade80" font-size="11">server: gunicorn/19.9.0</text>
+  <text x="696" y="230" fill="#555" font-size="10">No X-Powered-By header present</text>
+  <rect x="1100" y="198" width="114" height="20" rx="2" fill="#0a2a0a"/>
+  <text x="1157" y="212" fill="#4ade80" font-size="10" text-anchor="middle" letter-spacing="1">NO CVE SURFACE</text>
+
+  <!-- ===== ROW 2: Cookie Flags ===== -->
+  <line x1="80" y1="258" x2="1220" y2="258" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="274" fill="#555" font-size="9" letter-spacing="3">COOKIE SECURITY FLAGS</text>
+
+  <rect x="80" y="281" width="540" height="85" rx="2" fill="#0d0505" stroke="#2a0a0a" stroke-width="1"/>
+  <text x="96" y="300" fill="#ef4444" font-size="11">Set-Cookie: PHPSESSID=abc; path=/</text>
+  <text x="96" y="315" fill="#ef4444" font-size="11">Set-Cookie: security=low</text>
+  <rect x="424" y="287" width="190" height="20" rx="2" fill="#3a0a0a"/>
+  <text x="519" y="302" fill="#ef4444" font-size="10" text-anchor="middle" letter-spacing="1">MISSING ALL FLAGS</text>
+  <text x="96" y="330" fill="#888" font-size="10">✗ HttpOnly missing  →  XSS can steal session via document.cookie</text>
+  <text x="96" y="345" fill="#888" font-size="10">✗ Secure missing    →  cookie transmitted over plain HTTP</text>
+  <text x="96" y="362" fill="#888" font-size="10">✗ SameSite missing  →  CSRF attacks possible</text>
+
+  <rect x="680" y="281" width="540" height="85" rx="2" fill="#0a120a" stroke="#1a2a1a" stroke-width="1"/>
+  <text x="696" y="300" fill="#555" font-size="11">No Set-Cookie headers on index response</text>
+  <text x="696" y="326" fill="#4ade80" font-size="10">✓ Where cookies exist: HttpOnly + Secure applied</text>
+  <text x="696" y="344" fill="#4ade80" font-size="10">✓ SameSite=Lax enforced (Google response)</text>
+  <text x="696" y="362" fill="#555" font-size="10">Session tokens not exposed to JavaScript</text>
+
+  <!-- ===== ROW 3: CSP ===== -->
+  <line x1="80" y1="378" x2="1220" y2="378" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="394" fill="#555" font-size="9" letter-spacing="3">CONTENT SECURITY POLICY</text>
+
+  <rect x="80" y="401" width="540" height="52" rx="2" fill="#0d0505" stroke="#2a0a0a" stroke-width="1"/>
+  <text x="96" y="422" fill="#ef4444" font-size="11">Content-Security-Policy: (absent)</text>
+  <text x="96" y="440" fill="#888" font-size="10">No restriction on script sources — inline XSS executes freely</text>
+
+  <rect x="680" y="401" width="540" height="52" rx="2" fill="#0a120a" stroke="#1a2a1a" stroke-width="1"/>
+  <text x="696" y="420" fill="#555" font-size="11">Not present on httpbin either</text>
+  <text x="696" y="440" fill="#888" font-size="10">Both targets lack CSP — neither is a model here</text>
+
+  <!-- ===== ROW 4: X-Frame-Options ===== -->
+  <line x1="80" y1="465" x2="1220" y2="465" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="481" fill="#555" font-size="9" letter-spacing="3">CLICKJACKING PROTECTION</text>
+
+  <rect x="80" y="488" width="540" height="52" rx="2" fill="#0d0505" stroke="#2a0a0a" stroke-width="1"/>
+  <text x="96" y="509" fill="#ef4444" font-size="11">X-Frame-Options: (absent)</text>
+  <text x="96" y="527" fill="#888" font-size="10">Page can be embedded in iframes — clickjacking risk</text>
+
+  <rect x="680" y="488" width="540" height="52" rx="2" fill="#0a120a" stroke="#1a2a1a" stroke-width="1"/>
+  <text x="696" y="509" fill="#4ade80" font-size="11">X-Frame-Options: SAMEORIGIN  ✓</text>
+  <text x="696" y="527" fill="#888" font-size="10">Only same-origin frames allowed — clickjacking blocked</text>
+
+  <!-- ===== ROW 5: HSTS ===== -->
+  <line x1="80" y1="552" x2="1220" y2="552" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="568" fill="#555" font-size="9" letter-spacing="3">HTTPS ENFORCEMENT</text>
+
+  <rect x="80" y="575" width="540" height="52" rx="2" fill="#0d0505" stroke="#2a0a0a" stroke-width="1"/>
+  <text x="96" y="596" fill="#ef4444" font-size="11">Strict-Transport-Security: (absent)</text>
+  <text x="96" y="614" fill="#888" font-size="10">Browser will accept HTTP — MITM downgrade possible</text>
+
+  <rect x="680" y="575" width="540" height="52" rx="2" fill="#0a120a" stroke="#1a2a1a" stroke-width="1"/>
+  <text x="696" y="596" fill="#4ade80" font-size="11">alt-svc: h3=":443"  (HTTPS upgrade signaled)</text>
+  <text x="696" y="614" fill="#888" font-size="10">HTTPS redirect enforced at infrastructure level</text>
+
+  <!-- ===== ROW 6: Access-Control ===== -->
+  <line x1="80" y1="638" x2="1220" y2="638" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="80" y="654" fill="#555" font-size="9" letter-spacing="3">CORS POLICY</text>
+
+  <rect x="80" y="661" width="540" height="52" rx="2" fill="#1a1a08" stroke="#2a2a0a" stroke-width="1"/>
+  <text x="96" y="682" fill="#fbbf24" font-size="11">Access-Control-Allow-Origin: (absent)</text>
+  <text x="96" y="700" fill="#888" font-size="10">Not configured — isolated local app</text>
+
+  <rect x="680" y="661" width="540" height="52" rx="2" fill="#1a1a08" stroke="#2a2a0a" stroke-width="1"/>
+  <text x="696" y="682" fill="#fbbf24" font-size="11">Access-Control-Allow-Origin: *</text>
+  <text x="696" y="700" fill="#888" font-size="10">Wildcard CORS — any origin can read responses. API risk.</text>
+
+  <!-- Summary bar -->
+  <line x1="80" y1="725" x2="1220" y2="725" stroke="#333" stroke-width="1"/>
+
+  <rect x="80" y="733" width="540" height="30" rx="2" fill="#1a0505" stroke="#3a0a0a" stroke-width="1"/>
+  <text x="350" y="753" fill="#ef4444" font-size="11" font-weight="bold" text-anchor="middle">DVWA: 6 CRITICAL MISCONFIGURATIONS FOUND</text>
+
+  <rect x="680" y="733" width="540" height="30" rx="2" fill="#0a1a0a" stroke="#0a3a0a" stroke-width="1"/>
+  <text x="950" y="753" fill="#4ade80" font-size="11" font-weight="bold" text-anchor="middle">HTTPBIN: PARTIAL — WILDCARD CORS STILL AN ISSUE</text>
+
+  <!-- Footer -->
+  <line x1="80" y1="777" x2="1220" y2="777" stroke="#222" stroke-width="1"/>
+  <text x="80" y="797" fill="#333" font-size="10" letter-spacing="2">CURL METHODOLOGY PT.1 — OBSERVATION</text>
+  <text x="1220" y="797" fill="#333" font-size="10" text-anchor="end" letter-spacing="2">MODULE 3 — SECURITY HEADERS AUDIT</text>
+</svg>

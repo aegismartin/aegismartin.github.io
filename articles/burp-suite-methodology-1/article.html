@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Swiss Knife of the Pen-Tester, Practical Burp Suite Methodology — Part 1 | Aegis Martin</title>
+
+    <meta name="description" content="A red team methodology walkthrough of Burp Suite — covering request interception, parameter manipulation, CSRF token analysis, and building a mental security map using DVWA as the target.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js — syntax highlighting. Do NOT remove. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/article-page.css">
+</head>
+<body>
+
+    <!-- Lightbox overlay — do NOT remove, required for image zoom -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">&#x2715;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ════════════════════════════════════════════════════════
+         NAVBAR — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <div class="nav-overlay" aria-hidden="true"></div>    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../../assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>   
+            <ul class="nav-links">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../articles.html" class="active">Articles</a></li>
+                <li><a href="../../aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE HERO — metadata header
+    ════════════════════════════════════════════════════════════ -->
+    <header class="article-hero">
+        <div class="hero-inner">
+
+            <div class="article-meta-row">
+                <span class="series-badge methodology">METHODOLOGY</span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Jan 22, 2026
+                </span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    10 min read
+                </span>
+            </div>
+
+            <h1 class="article-title">Swiss Knife of the Pen-Tester, Practical Burp Suite Methodology — Part 1</h1>
+
+            <p class="article-excerpt">
+                Burp Suite is a core offensive security platform for manual web application testing. This write-up documents red team methodology using Burp — request interception, parameter manipulation, CSRF analysis, and building a mental security map, all on DVWA.
+            </p>
+
+            <div class="article-tags-row">
+                <span class="art-tag">#pentesting</span>
+                <span class="art-tag">#burp-suite</span>
+                <span class="art-tag">#web-security</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE BODY — TOC sidebar + content column
+    ════════════════════════════════════════════════════════════ -->
+    <div class="article-layout">
+
+        <!-- TABLE OF CONTENTS — auto-generated by JS, do NOT edit -->
+        <aside class="toc-sidebar" id="tocSidebar">
+            <div class="toc-header">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Contents
+            </div>
+            <ul class="toc-list" id="tocList">
+                <!-- populated automatically from h2/h3 headings -->
+            </ul>
+        </aside>
+
+        <article class="article-content" id="articleContent">
+
+            <!-- Cover image -->
+            <div class="article-cover-inline">
+                <img src="images/main.png" alt="Swiss Knife of the Pen-Tester, Practical Burp Suite Methodology Part 1 cover">
+            </div>
+
+            <p>
+                Burp Suite is a core offensive security platform used for manual web application testing. Here I will document Burp from a red team perspective, focusing on request analysis, attack surface discovery, and exploit development rather than automated scanning. For our target we will use DVWA (Damn Vulnerable Web Application). Check the official repository if you're interested — <a href="https://github.com/digininja/DVWA" target="_blank" rel="noopener">github.com/digininja/DVWA</a>.
+            </p>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    This write-up is <strong>not</strong> documentation and is not supposed to teach you every function of the tool. It is supposed to show actual Red Team methodology using Burp Suite. If your aim is to learn the tool specifically, use the actual <a href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-excessive-trust-in-client-side-controls" target="_blank" rel="noopener">PortSwigger guide</a>.
+                </div>
+            </div>
+
+            <h2 id="intercepting-a-request">Intercepting a Request</h2>
+
+            <p>
+                We will use Burp Proxy to intercept requests. Burp Proxy allows interception and modification of HTTP requests in transit, enabling visibility into parameters, headers, cookies, and server trust assumptions.
+            </p>
+
+            <figure class="article-image">
+                <img src="images/1.png" alt="Burp Suite Proxy tab with Intercept turned on">
+                <figcaption>Burp Suite Proxy — Intercept is on, Chromium browser open and ready</figcaption>
+            </figure>
+
+            <p>
+                Click the Proxy tab then turn on the intercept. You will see the middle panel say "Intercept is on". Now every request performed by Burp's browser will be shown here. Click "Open Browser" to open Chromium — Burp Suite's built-in browser, preconfigured to work with Burp Suite.
+            </p>
+
+            <p>When we send an HTTP request, Burp Suite will intercept it so the page won't load, and we can study the request.</p>
+
+            <figure class="article-image">
+                <img src="images/2.png" alt="Burp Suite showing an intercepted HTTP request in Pretty mode">
+                <figcaption>An intercepted request in Pretty mode — Raw and Hex views are also available</figcaption>
+            </figure>
+
+            <p>
+                Now we can study the request and even <strong>modify</strong> it. Currently it's in <strong>Pretty</strong> mode, but Raw and Hex versions are also available. To let the request reach the server, click <strong>Forward</strong>. You won't need to intercept every request, so turn it off when you don't need it. Next to the Intercept tab there's also an <strong>HTTP History</strong> tab for reviewing requests and responses you've already made.
+            </p>
+
+            <div class="callout note">
+                <span class="callout-icon">📝</span>
+                <div class="callout-body">
+                    <strong>Note</strong>
+                    At this stage, no exploitation is performed. The goal is to understand request structure, flow, and server responses before attempting manipulation.
+                </div>
+            </div>
+
+            <p><strong>What browsers hide.</strong> When you click "login" in a browser, this happens invisibly:</p>
+
+            <ol>
+                <li>JavaScript may modify your input</li>
+                <li>Hidden fields are added</li>
+                <li>Headers are automatically set</li>
+                <li>Request is sent</li>
+            </ol>
+
+            <p><strong>You never see:</strong></p>
+            <ul>
+                <li>What data is actually being sent</li>
+                <li>Which fields are validated client-side only</li>
+                <li>What the server actually receives</li>
+            </ul>
+
+            <p><strong>Burp reveals this:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTTP</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-http">POST /login.php HTTP/1.1
+Host: localhost:8081
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&amp;password=password&amp;user_token=abc123&amp;Login=Login</code></pre>
+            </div>
+
+            <p><strong>Security implications:</strong></p>
+            <ul>
+                <li><code>user_token</code> is a CSRF token — can we bypass it?</li>
+                <li><code>Login=Login</code> is a hidden field — is it validated?</li>
+                <li>Client-side JavaScript might reject input — does the server also check?</li>
+            </ul>
+
+            <p><strong>Attack surface questions:</strong></p>
+            <ul>
+                <li>What happens if I remove <code>user_token</code>?</li>
+                <li>What if I change <code>Login</code> to something else?</li>
+                <li>What if I add extra parameters?</li>
+            </ul>
+
+            <h2 id="modifying-requests">Modifying HTTP Requests with Burp Proxy</h2>
+
+            <p>
+                Now we will manipulate these requests in ways the website isn't expecting, in order to see how it responds. In this write-up we will focus on understanding the topic and developing a Red Team mindset.
+            </p>
+
+            <p>Go back to <code>http://localhost:8081/login.php</code> and turn <strong>intercept</strong> on. Now click login again.</p>
+
+            <figure class="article-image">
+                <img src="images/3.png" alt="Burp Suite intercept showing the DVWA login POST request with parameters visible">
+                <figcaption>Login POST request intercepted — username, password, user_token, and Login parameters all visible</figcaption>
+            </figure>
+
+            <p>
+                Using the previously identified login request, we now manipulate parameters to observe backend validation behavior. After doing so go to <strong>HTTP History</strong> and pick your request to see information about it and the response. <em>Don't forget to switch "Original request" to "Edited request" to look at the right thing.</em>
+            </p>
+
+            <figure class="article-image">
+                <img src="images/4.png" alt="Burp Suite HTTP History showing original vs edited request comparison with server response">
+                <figcaption>HTTP History — comparing original and edited requests alongside the server's response</figcaption>
+            </figure>
+
+            <p>
+                When we change the username or password to a wrong one we receive code 302, which redirects us back to the login page. If we also change the <code>user_token</code> we will see that the original body of the login page has changed — it now contains the following:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTML</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-html">&lt;div class="message"&gt;CSRF token is incorrect&lt;/div&gt;</code></pre>
+            </div>
+
+            <p>
+                This confirms that DVWA enforces CSRF protection on the login endpoint and validates the token before credential processing. Authentication failure and CSRF failure are handled as separate conditions, each producing distinct server responses. Now you know how to modify requests in Burp Suite.
+            </p>
+
+            <div class="callout tip">
+                <span class="callout-icon">💡</span>
+                <div class="callout-body">
+                    <strong>Tip</strong>
+                    HTTP History saves all requests made in the browser, including third-party ones like Google Analytics. They add noise and make your job harder. To prevent that, add the hosts of interest to <strong>scope</strong>Sort requests by the leftmost column (#) in descending order, right-click a request, and click <strong>"Add to scope"</strong>Manage scope via <strong>Target &gt; Site map</strong>
+                </div>
+            </div>
+
+            <h3 id="reissue-with-repeater">Reissue Requests with Burp Repeater</h3>
+
+            <p>
+                In this section we will use <strong>Burp Repeater</strong> to send an <em>interesting request</em> over and over again. This allows us to study server responses to different input without having to use intercept for every single request. We will dissect the DVWA login page to determine exactly how the CSRF token works in that application.
+            </p>
+
+            <h4>Step 1: Identify an Interesting Request</h4>
+
+            <p>
+                An interesting request can be anything depending on the application — sometimes it's a <code>GET /product</code> request with a <code>productId</code> query parameter, sometimes it's related to login. For us, the interesting request is the POST request the client sends to the server to log into the application.
+            </p>
+
+            <figure class="article-image">
+                <img src="images/5.png" alt="Burp Suite HTTP History with the login POST request selected, ready to send to Repeater">
+                <figcaption>Right-click the login POST request and select "Send to Repeater"</figcaption>
+            </figure>
+
+            <p>Right-click on it and click <strong>"Send to Repeater"</strong>. The Repeater tab will light up — your request is now there.</p>
+
+            <h4>Step 2: Understand How Repeater Works</h4>
+
+            <figure class="article-image">
+                <img src="images/6.png" alt="Burp Suite Repeater tab showing the login request and 302 response with Follow Redirection option">
+                <figcaption>Burp Repeater — send the original request, get a 302, then follow the redirection to confirm successful login</figcaption>
+            </figure>
+
+            <p>
+                Send the original version — it will respond with status 302, meaning we're being redirected. A "Follow redirection" button will appear next to the Send button. Click it. The response confirms we're now at <code>index.php</code>, the DVWA home:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTTP</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-http">HTTP/1.1 200 OK
+Date: Thu, 08 Jan 2026 11:02:52 GMT
+Server: Apache/2.4.25 (Debian)
+Expires: Tue, 23 Jun 2009 12:00:00 GMT
+Cache-Control: no-cache, must-revalidate
+Pragma: no-cache
+Vary: Accept-Encoding
+Content-Length: 6864
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html;charset=utf-8
+
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+    &lt;head&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+        &lt;title&gt;Welcome :: Damn Vulnerable Web Application (DVWA) v1.10 *Development*&lt;/title&gt;
+        &lt;link rel="stylesheet" type="text/css" href="dvwa/css/main.css" /&gt;
+        &lt;link rel="icon" type="image/ico" href="favicon.ico" /&gt;
+        &lt;script type="text/javascript" src="dvwa/js/dvwaPage.js"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body class="home"&gt;
+    ...</code></pre>
+            </div>
+
+            <p>
+                Now we can resend this request as many times as we like and the response will be fresh every time. Click the <strong>&lt;</strong> button next to Send to go back to the original request, since it changed during the redirection and session/cookie assignment.
+            </p>
+
+            <h4>Step 3: Modify the Request in Repeater</h4>
+
+            <p>
+                Finally we will edit the request to try different case scenarios and understand how the server handles CSRF tokens.
+            </p>
+
+            <ol>
+                <li>
+                    <p><strong>Case 1 — Missing token.</strong> Edit the request to remove <code>user_token</code> entirely and hit Send → Follow redirect. We still receive status 302, BUT this time we're sent back to <code>/login.php</code> with the response body containing <code>&lt;div class="message"&gt;CSRF token is incorrect&lt;/div&gt;</code>.</p>
+                </li>
+
+                <li>
+                    <p><strong>Case 2 — Wrong token.</strong> After sending a wrong token we receive the exact same response. Also interesting: the response body contains a different CSRF token from the original one (this happens every time). If we try that new token we still receive the incorrect token message. <em>Interesting.</em></p>
+                </li>
+
+                <li>
+                    <p><strong>Case 3 — Malformed token.</strong></p>
+
+                    <ol>
+                        <li>
+                            <p>What if we send not just a wrong token but a truly malformed one? Using Chinese, Arabic, Cyrillic letters and non-ASCII symbols. In Burp those symbols will appear as rectangles or "?" — that's not an error on your side, Burp simply can't render them due to missing fonts. The server response remains unchanged, indicating CSRF validation is not influenced by character encoding or token format.</p>
+                        </li>
+
+                        <li>
+                            <p>Browsers default to UTF-8 and the server <strong>expects</strong> it — but it's not always enforced. What if we change the encoding? Let's lie in the header and resend our malformed request:</p>
+
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">HTTP</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-http">Content-Type: application/x-www-form-urlencoded; charset=ISO-8859-1</code></pre>
+                            </div>
+
+                            <p>The key parts of the response:</p>
+
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">HTTP</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-http">HTTP/1.1 200 OK
+Date: Thu, 08 Jan 2026 11:28:37 GMT
+Server: Apache/2.4.25 (Debian)
+Expires: Tue, 23 Jun 2009 12:00:00 GMT
+Cache-Control: no-cache, must-revalidate
+Pragma: no-cache
+Vary: Accept-Encoding
+Content-Length: 1735
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html;charset=utf-8  &lt;!-- Server enforces UTF-8 --&gt;
+
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+...
+
+    &lt;div class="message"&gt;You have logged in as 'admin'&lt;/div&gt;
+    &lt;div class="message"&gt;You have logged in as 'admin'&lt;/div&gt;
+    &lt;div class="message"&gt;CSRF token is incorrect&lt;/div&gt;
+    &lt;div class="message"&gt;CSRF token is incorrect&lt;/div&gt;
+
+...
+&lt;/html&gt;</code></pre>
+                            </div>
+
+                            <p>
+                                Although the application does not redirect to the authenticated area, the presence of the "You have logged in as admin" message confirms that authentication logic executed successfully and a session was established. This means: <strong>Authentication happens before CSRF token validation.</strong> But why do we receive each message twice? This is the result of sloppiness in the "low" difficulty setting. The application processes authentication and CSRF validation without enforcing a strict execution order or terminating request processing on failure. As a result, both success and failure messages are generated and rendered multiple times within a single response.
+                            </p>
+                        </li>
+
+                        <li>
+                            <p>Now let's check whether the server has proper input-handling — we will poke the server's decoding to see if it has holes of its own. This is <strong>Raw Binary Abuse</strong>. In Repeater, switch the presentation from "Pretty" to "Raw" before editing. Note that this technique works best against backends with C/C++ extensions, legacy libraries, or mixed language stacks. That's not DVWA's case here, but the technique remains valid for other applications.</p>
+
+                            <ol>
+                                <li>
+                                    <p><strong>Null Byte injection.</strong> Tests whether the backend treats <code>%00</code> as a string terminator. Try: <code>user_token=abc%00def</code>. The response body contains two "CSRF token is incorrect" messages again — no auth this time.</p>
+                                </li>
+                                <li>
+                                    <p><strong>Invalid UTF-8 sequences.</strong> Can sometimes crash a really bad parser. Try: <code>user_token=%C0%AF</code>. No interesting response received.</p>
+                                </li>
+                                <li>
+                                    <p><strong>Control characters.</strong> ASCII control characters are still ASCII, just different. Try: <code>user_token=abc%0D%0Adef</code>. This is CRLF — Carriage Return (<code>\r</code>, ASCII 13) and Line Feed (<code>\n</code>, ASCII 10), used to note line termination. Response is the same.</p>
+                                </li>
+                                <li>
+                                    <p><strong>Size mismatch.</strong> Lie about the content size — set the <code>Content-Length</code> header to <code>1</code>. Note: this is more effective with raw sockets; Burp Suite won't let us fully desync HTTP easily. Response is a <strong>double</strong> "CSRF token is incorrect" message.</p>
+                                </li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+
+            <p><strong>Observations Summary:</strong></p>
+
+            <ul>
+                <li>CSRF token presence and value are validated, but validation does not block authentication logic.</li>
+                <li>Character encoding manipulation does not influence CSRF validation.</li>
+                <li>Malformed, binary, and control-character input is normalized before validation.</li>
+                <li>No decoding or parsing vulnerabilities were identified.</li>
+                <li>Authentication executes prior to CSRF enforcement on low security configuration.</li>
+            </ul>
+
+            <h3 id="conclusion-and-tips">Conclusion and Tips</h3>
+
+            <p>These were specific examples, but there are <strong>unwritten rules</strong> when we analyse server behavior through HTTP requests:</p>
+
+            <ol>
+                <li>
+                    <p><strong>HTTP status code.</strong> These are crucial for understanding backend logic.</p>
+                    <ul>
+                        <li><strong>200</strong> → action likely succeeded, or the app failed open</li>
+                        <li><strong>302 / 301</strong> → redirect, often auth or validation failure</li>
+                        <li><strong>401 / 403</strong> → access control triggered</li>
+                        <li><strong>400</strong> → input rejected early</li>
+                        <li><strong>500</strong> → you broke backend logic (valuable)</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <p><strong>Response body differences.</strong> You don't need to read the whole response.</p>
+                    <ul>
+                        <li>New error message?</li>
+                        <li>Different HTML block?</li>
+                        <li>Debug output?</li>
+                        <li>Same page but different content?</li>
+                    </ul>
+                    <p>Example we already saw: invalid CSRF → explicit CSRF error. Invalid credentials → generic login failure.</p>
+                </li>
+
+                <li>
+                    <p><strong>Authentication state changes.</strong> After forwarding a modified request, ask:</p>
+                    <ol>
+                        <li>Am I still logged in?</li>
+                        <li>Was I logged out?</li>
+                        <li>Did my role change?</li>
+                        <li>Did access persist?</li>
+                    </ol>
+                </li>
+
+                <li>
+                    <p><strong>Headers.</strong> <code>Set-Cookie</code> can appear in <strong>failed</strong> auth responses too. Pay attention to:</p>
+                    <ul>
+                        <li><strong>Is it a NEW session token?</strong> (auth succeeded)</li>
+                        <li><strong>Is it the SAME token?</strong> (auth failed, session persisted)</li>
+                        <li><strong>Is the token DELETED?</strong> (session terminated)</li>
+                    </ul>
+                    <p>Other headers can give interesting information too.</p>
+                </li>
+
+                <li>
+                    <p><strong>What the server ignores.</strong> Sometimes <em>nothing</em> can be more useful than <em>something</em>.</p>
+                    <ul>
+                        <li>Duplicate parameters (which one wins?)</li>
+                        <li>Case sensitivity in parameter names</li>
+                        <li>Content-Type manipulation (JSON → form-data → XML)</li>
+                        <li>HTTP verb changes (POST → PUT → PATCH)</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p>Using these observations you can build a <strong>mental security map</strong>. Use this structure mentally or make your own:</p>
+
+            <ol>
+                <li><strong>Entry points:</strong> Login, Settings, Forms, API endpoints — anything that changes state.</li>
+                <li>
+                    <p><strong>For each entry point, answer 4 questions:</strong></p>
+                    <ol>
+                        <li>What controls access? Session cookie, Token, Role, or Nothing?</li>
+                        <li>What validation exists? CSRF, Input length, Method check, Client-side only?</li>
+                        <li>What happens if input lies? Silent fail, Explicit error, or Partial success?</li>
+                        <li>What does the server trust by default? This is the crucial one.</li>
+                    </ol>
+                </li>
+            </ol>
+
+            <p>In the next Burp Suite Methodology write-ups we will focus on more offensive techniques.</p>
+
+            <hr>
+
+            <div class="callout warning">
+                <span class="callout-icon">⚠</span>
+                <div class="callout-body">
+                    <strong>Warning</strong>
+                    Only test against systems you own or have explicit written permission to test.
+                </div>
+            </div>
+
+        </article>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE FOOTER — back link + share buttons
+    ════════════════════════════════════════════════════════════ -->
+    <section class="article-footer-section">
+        <div class="article-footer-divider"></div>
+        <div class="article-footer-meta">
+
+            <a href="../../articles.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Articles
+            </a>
+
+            <div class="article-share">
+                <span class="share-label">Share</span>
+                <a href="https://twitter.com/intent/tweet?text=Swiss+Knife+of+the+Pen-Tester%2C+Practical+Burp+Suite+Methodology+%E2%80%94+Part+1&url=https://aegismartin.com/articles/burp-suite-part-1" target="_blank" rel="noopener" class="share-btn" title="Share on X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://aegismartin.com/articles/burp-suite-part-1" target="_blank" rel="noopener" class="share-btn" title="Share on LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════
+         FOOTER — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js — do NOT remove -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script data-cfasync="false" src="../../assets/js/particles.js"></script>
+    <script data-cfasync="false" src="../../assets/js/article-page.js"></script>
+    <script data-cfasync="false" src="../../assets/js/nav.js"></script>   
+
+</body>
+</html>

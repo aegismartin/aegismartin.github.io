@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>OWASP Juice Shop — 1 Star Challenges | Aegis Martin</title>
+
+    <meta name="description" content="A walkthrough of all OWASP Juice Shop 1-star difficulty challenges — covering DOM XSS, client-side validation bypass, missing URL encoding, exposed metrics, and more.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js — syntax highlighting. Do NOT remove. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/article-page.css">
+</head>
+<body>
+
+    <!-- Lightbox overlay — do NOT remove, required for image zoom -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">&#x2715;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ════════════════════════════════════════════════════════
+         NAVBAR — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../../assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button> 
+            <ul class="nav-links">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../articles.html" class="active">Articles</a></li>
+                <li><a href="../../aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE HERO — metadata header
+    ════════════════════════════════════════════════════════════ -->
+    <header class="article-hero">
+        <div class="hero-inner">
+
+            <div class="article-meta-row">
+                <span class="series-badge exploring">EXPLORING CYBERSECURITY</span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Jan 23, 2026
+                </span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    5 min read
+                </span>
+            </div>
+
+            <h1 class="article-title">OWASP Juice Shop — 1 Star Challenges</h1>
+
+            <p class="article-excerpt">
+                Completing all OWASP Juice Shop 1-star challenges with key techniques and detailed explanations — from client-side validation bypass and DOM XSS to exposed metrics and URL encoding gaps.
+            </p>
+
+            <div class="article-tags-row">
+                <span class="art-tag">#pentesting</span>
+                <span class="art-tag">#labs</span>
+                <span class="art-tag">#web-security</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE BODY — TOC sidebar + content column
+    ════════════════════════════════════════════════════════════ -->
+    <div class="article-layout">
+
+        <!-- TABLE OF CONTENTS — auto-generated by JS, do NOT edit -->
+        <aside class="toc-sidebar" id="tocSidebar">
+            <div class="toc-header">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Contents
+            </div>
+            <ul class="toc-list" id="tocList">
+                <!-- populated automatically from h2/h3 headings -->
+            </ul>
+        </aside>
+
+        <article class="article-content" id="articleContent">
+
+            <!-- Cover image -->
+            <div class="article-cover-inline">
+                <img src="images/main.png" alt="OWASP Juice Shop 1 Star Challenges cover">
+            </div>
+
+            <p>
+                In this write-up we will be completing OWASP Juice Shop's 1-star challenges, focusing on key techniques and a detailed explanation of each one. Go to <code>/score-board</code> to finish the first challenge and observe the others. <strong>This write-up does not include coding challenges.</strong>
+            </p>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    It is recommended to have read "Weaponizing HTTP Headers: The Reconnaissance Phase" article and Burp Suite Methodology write-up to be able to follow along with this write-up.
+                </div>
+            </div>
+
+            <h2 id="zero-stars">Zero Stars</h2>
+
+            <blockquote>
+                <p>Give a devastating zero-star feedback to the store.</p>
+            </blockquote>
+
+            <p>
+                To do so we first must create an account. Account creation requires a password between 5 and 40 characters. Out of curiosity I decided to intercept the request and enter 4 characters — and it worked.
+            </p>
+
+            <figure class="article-image">
+                <img src="images/1.png" alt="Burp Suite showing the account creation request intercepted with a 4-character password accepted by the server">
+                <figcaption>4-character password accepted by the server — input validation is client-side only</figcaption>
+            </figure>
+
+            <p>
+                This tells us that input validation is client-side only — the server trusts the client <em>too much</em>. Keep this in mind for future challenges. Now back to the main task.
+            </p>
+
+            <p>
+                Go to the customer feedback page and write a review. Before sending it, turn on Burp Suite intercept and catch the request. Change the rating value in the HTTP request to <code>0</code> and forward it. Challenge complete.
+            </p>
+
+            <h2 id="bully-chatbot">Bully Chatbot</h2>
+
+            <blockquote>
+                <p>Receive a coupon code from the support chatbot.</p>
+            </blockquote>
+
+            <p>Go to the Support chat and ask the chatbot to give you a coupon. Insist on it until it gives up.</p>
+
+            <h2 id="error-handling">Error Handling</h2>
+
+            <blockquote>
+                <p>Provoke an error that is neither very gracefully nor consistently handled.</p>
+            </blockquote>
+
+            <p>
+                The easiest way is to send a malformed review on one of the products. Write anything in the review, intercept it with Burp Suite, then <em>play with it</em> — for example, remove the <code>""</code> where they are clearly expected by the parser.
+            </p>
+
+            <h2 id="missing-encoding">Missing Encoding</h2>
+
+            <blockquote>
+                <p>Retrieve the photo of Bjoern's cat in "melee combat-mode".</p>
+            </blockquote>
+
+            <p>Go to the Photo Wall — the first picture is missing. Inspect the page source and you'll find this:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTML</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-html">&lt;img class="image" src="assets/public/images/uploads/ᓚᘏᗢ-#zatschi-#whoneedsfourlegs-1572600969477.jpg" alt="😼 #zatschi #whoneedsfourlegs"&gt;</code></pre>
+            </div>
+
+            <p>
+                URL encoding does not support <code>#</code>. We have to encode it ourselves — replace every <code>#</code> with <code>%23</code> (the URL encoding of <code>#</code>) in the image path and navigate to it directly. Done.
+            </p>
+
+            <h2 id="dom-xss-and-bonus-payload">DOM XSS and Bonus Payload</h2>
+
+            <blockquote>
+                <p>Perform a DOM XSS attack with <code>&lt;iframe src="javascript:alert(`xss`)"&gt;</code>.</p>
+            </blockquote>
+
+            <p>
+                DOM XSS means <strong>user input is written into the DOM via <code>innerHTML</code> or similar, without sanitization</strong>. No server needed. Simply input the following payload into the search bar:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTML</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-html">&lt;iframe src="javascript:alert(`xss`)"&gt;</code></pre>
+            </div>
+
+            <p>Challenge complete. The bonus payload challenge is the same — input this instead and enjoy the song:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTML</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-html">&lt;iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&amp;color=%23ff5500&amp;auto_play=true&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true"&gt;&lt;/iframe&gt;</code></pre>
+            </div>
+
+            <h2 id="privacy-policy">Privacy Policy</h2>
+
+            <blockquote>
+                <p>Read our privacy policy.</p>
+            </blockquote>
+
+            <p>Be logged in and navigate to <strong>Account → Privacy and Security → Privacy Policy</strong>.</p>
+
+            <h2 id="web3-sandbox">Web3 Sandbox</h2>
+
+            <blockquote>
+                <p>Find an accidentally deployed code sandbox for writing smart contracts on the fly.</p>
+            </blockquote>
+
+            <p>
+                Inspect the page and go to <strong>Sources</strong>. Find the <code>main.js</code> file and press <kbd>Ctrl+F</kbd> to search by keywords like <code>sandbox</code> or <code>web3</code>. Once you find the right path, enter it in the URL bar and you're there.
+            </p>
+
+            <h2 id="repetitive-registration">Repetitive Registration</h2>
+
+            <blockquote>
+                <p>Follow the DRY principle while registering a user.</p>
+            </blockquote>
+
+            <p>
+                Log out and try to register a new account. Go through the normal registration flow, but when you click Register, intercept the request with Burp Suite and delete the repeated password field from the request body before forwarding.
+            </p>
+
+            <h2 id="exposed-metrics">Exposed Metrics</h2>
+
+            <blockquote>
+                <p>Find the endpoint that serves usage data to be scraped by a popular monitoring system.</p>
+            </blockquote>
+
+            <p>
+                The monitoring system in question is <a href="https://github.com/prometheus/prometheus" target="_blank" rel="noopener">Prometheus</a>. A quick check of the official documentation reveals that Prometheus exposes metrics at the <code>/metrics</code> path by default. Navigate to:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">http://localhost:3000/metrics</code></pre>
+            </div>
+
+            <h2 id="outdated-allowlist">Outdated Allowlist</h2>
+
+            <blockquote>
+                <p>Let us redirect you to one of our crypto currency addresses which are not promoted any longer.</p>
+            </blockquote>
+
+            <p>
+                We need to find a redirect link pointing somewhere crypto-related. Open DevTools, find <code>main.js</code>, and press <kbd>Ctrl+F</kbd> to search for <code>redirect</code>. Look for crypto-related URLs. The first one found was:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">TEXT</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code>./redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm</code></pre>
+            </div>
+
+            <p>There are other crypto wallets too. Append this path to the main domain and navigate to it.</p>
+
+            <h2 id="mass-dispel">Mass Dispel</h2>
+
+            <blockquote>
+                <p>Close multiple "Challenge solved" notifications in one go.</p>
+            </blockquote>
+
+            <p>
+                The hint points us to the application documentation. When we restart the application, all previously solved notifications pile up and become tedious to close one by one. The developers built in a shortcut: <kbd>Shift</kbd> + <strong>left mouse button click</strong> on any notification closes all of them at once. That's the challenge.
+            </p>
+
+            <h2 id="conclusion">Conclusion</h2>
+
+            <p>
+                1-star challenges aren't hard — that's the point. But they showed us how the application works and trained our observation skills. Client-side-only validation, exposed endpoints, URL encoding gaps, DOM injection sinks — these are the foundations everything harder is built on.
+            </p>
+
+            <hr>
+
+            <div class="callout warning">
+                <span class="callout-icon">⚠</span>
+                <div class="callout-body">
+                    <strong>Warning</strong>
+                    Only test against systems you own or have explicit written permission to test.
+                </div>
+            </div>
+
+        </article>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE FOOTER — back link + share buttons
+    ════════════════════════════════════════════════════════════ -->
+    <section class="article-footer-section">
+        <div class="article-footer-divider"></div>
+        <div class="article-footer-meta">
+
+            <a href="../../articles.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Articles
+            </a>
+
+            <div class="article-share">
+                <span class="share-label">Share</span>
+                <a href="https://twitter.com/intent/tweet?text=OWASP+Juice+Shop+%E2%80%94+1+Star+Challenges&url=https://aegismartin.com/articles/juice-shop-1-star" target="_blank" rel="noopener" class="share-btn" title="Share on X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://aegismartin.com/articles/juice-shop-1-star" target="_blank" rel="noopener" class="share-btn" title="Share on LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════
+         FOOTER — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js — do NOT remove -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script data-cfasync="false" src="../../assets/js/particles.js"></script>
+    <script data-cfasync="false" src="../../assets/js/article-page.js"></script>
+    <script data-cfasync="false" src="../../assets/js/nav.js"></script>   
+
+</body>
+</html>

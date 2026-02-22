@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">   
+    <meta name="description" content="Aegis Martin — cybersecurity practitioner and developer from Vanadzor. Security tools, technical writeups, and practical insights on offensive and defensive security.">
+    <link rel="icon" href="favicon.ico">   
+    <title>Aegis Martin - Cybersecurity Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-tag">CYBERSECURITY SPECIALIST</div>
+                <h1 class="hero-title">
+                    Offensive &amp; Defensive
+                    <span class="glitch-text" data-text="Security">Security</span>
+                </h1>
+                <p class="hero-description">
+                    I specialize in practical cybersecurity learning: tool development, network fundamentals, and threat analysis and professional security writing.
+                    If you have an automation task, need a website, a writer or just a helping hand, I'm all ears!
+                </p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">Contact Me</a>
+                    <a href="articles.html" class="btn btn-secondary">Read Articles</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-glow"></div>
+                <img src="assets/img/me.png" alt="Aegis Martin">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="section-container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title-left">Who is Martin Simonyan?</h2>
+                    <p>I am a cybersecurity practitioner and developer from Vanadzor, focused on creating practical security tools and writing concise,
+                    technical articles. My work emphasizes clean engineering, disciplined learning, and a straightforward approach to problem-solving.
+                    I am committed to continuous professional growth and delivering value through clarity and precision.</p>
+                    <h2 class="section-title-left">What is Aegis Martin?</h2>
+                    <p>
+                        Aegis Martin is my personal initiative dedicated to developing security tools, publishing educational content, and
+                        supporting individuals seeking to improve their digital resilience. It serves as a structured space for experimentation,
+                        refinement, and sharing practical insights. The project reflects my commitment to reliability, simplicity, and real-world applicability.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="skills-header">// Proficiency Overview</div>
+                    <div class="skill-item">
+                        <div class="skill-label">
+                            <span class="skill-name">Professional Security Writing</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-label">
+                            <span class="skill-name">Python / Automation</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-label">
+                            <span class="skill-name">Networking</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-label">
+                            <span class="skill-name">Security Hardening</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AegisCLI Preview -->
+    <section class="aegiscli-preview">
+        <div class="section-container">
+            <h2 class="section-title">
+                <span class="title-line"></span>
+                AegisCLI
+                <span class="title-line"></span>
+            </h2>
+            <div class="cli-content">
+                <div class="cli-info">
+                    <h2 class="section-title-left">
+                        AegisCLI - Version 0.3.1 Alpha
+                        <span class="alpha-tag">ALPHA</span>
+                    </h2>
+                    <p class="cli-description">AegisCLI is a lightweight recon framework designed to eliminate tool-juggling hell. Native implementations with consistent CLI patterns across profiling, scanning, enumeration, and analysis - built for chaining, automation, and maintainability.</p>
+                    <div class="cli-features">
+                        <div class="cli-feature">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Automated reconnaissance, enumeration and application profiling</span>
+                        </div>
+                        <div class="cli-feature">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Logging and command chaining</span>
+                        </div>
+                        <div class="cli-feature">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Analysing and probing the application for vulnerabilities</span>
+                        </div>
+                    </div>
+                    <a href="aegiscli.html" class="btn btn-primary">Learn More</a>
+                </div>
+                <div class="cli-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">aegiscli — bash</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span>aegis profiler web -v --log example.com</span>
+                        </div>
+                        <div class="terminal-line output">✓ Captured 4 connection properties</div>
+                        <div class="terminal-line output">▸ Filtering 7 headers against 19 patterns</div>
+                        <div class="terminal-line output">✓ TLS handshake completed (0.416s)</div>
+                        <div class="terminal-line output">✓ Extracted 4 relevant certificate fields</div>
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="cursor">_</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section id="certificates" class="certificates">
+        <div class="section-container">
+            <h2 class="section-title">
+                <span class="title-line"></span>
+                Certifications
+                <span class="title-line"></span>
+            </h2>
+            <div class="cert-grid">
+
+                <!-- Google -->
+                <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/BN73RVF93KPI" target="_blank" rel="noopener noreferrer" class="cert-card cert-card--google">
+                    <div class="cert-top-bar"></div>
+                    <div class="cert-header">
+                        <div class="cert-logo-wrap">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <path d="M21.6 12.2A9.9 9.9 0 0 0 21.4 10H12v4h5.6a4.8 4.8 0 0 1-2.1 3.1v2.6h3.4c2-1.8 3.1-4.5 3.1-7.5h-.4z" fill="currentColor" opacity="0.85"/>
+                                <path d="M12 22c2.7 0 5-.9 6.9-2.4l-3.4-2.6a6 6 0 0 1-3.5 1c-2.7 0-5-1.8-5.8-4.3H2.6v2.7A10 10 0 0 0 12 22z" fill="currentColor" opacity="0.65"/>
+                                <path d="M6.2 13.7a6 6 0 0 1 0-3.8V7.3H2.6A10 10 0 0 0 2 12c0 1.6.4 3.2 1 4.5l3.2-2.8z" fill="currentColor" opacity="0.45"/>
+                                <path d="M12 6c1.5 0 2.8.5 3.9 1.5l2.9-2.9A10 10 0 0 0 2.6 7.3l3.6 2.6C7 7.8 9.3 6 12 6z" fill="currentColor" opacity="0.75"/>
+                            </svg>
+                        </div>
+                        <div class="cert-issuer-block">
+                            <span class="cert-issuer-label">Issued by</span>
+                            <span class="cert-issuer-name">Google</span>
+                        </div>
+                        <div class="cert-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cert-body">
+                        <span class="cert-badge">Professional Certificate</span>
+                        <h3 class="cert-title">Cybersecurity Professional</h3>
+                        <div class="cert-skills">
+                            <span class="skill-tag">Security Ops</span>
+                            <span class="skill-tag">Incident Response</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">SIEM</span>
+                        </div>
+                    </div>
+                    <div class="cert-footer">
+                        <span class="cert-verify-text">Click to verify credential</span>
+                    </div>
+                </a>
+
+                <!-- TryHackMe -->
+                <a href="https://tryhackme.com/certificate/THM-DQO8KZY9E0" target="_blank" rel="noopener noreferrer" class="cert-card cert-card--thm">
+                    <div class="cert-top-bar"></div>
+                    <div class="cert-header">
+                        <div class="cert-logo-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 10.4A3.6 3.6 0 0 0 15.8 7 6.4 6.4 0 0 0 9.5 5C7 5 5 6.9 5 9.2v.1A3.4 3.4 0 0 0 3 12.3C3 14.3 4.8 16 7 16h11c1.7 0 3-1.2 3-2.8 0-1.5-1.1-2.6-2-2.8z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="cert-issuer-block">
+                            <span class="cert-issuer-label">Issued by</span>
+                            <span class="cert-issuer-name">TryHackMe</span>
+                        </div>
+                        <div class="cert-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cert-body">
+                        <span class="cert-badge cert-badge--thm">Path Completion</span>
+                        <h3 class="cert-title">SOC Level 1 Path</h3>
+                        <div class="cert-skills">
+                            <span class="skill-tag">Threat Detection</span>
+                            <span class="skill-tag">Log Analysis</span>
+                            <span class="skill-tag">IDS/IPS</span>
+                            <span class="skill-tag">Tshark</span>
+                        </div>
+                    </div>
+                    <div class="cert-footer">
+                        <span class="cert-verify-text">Click to verify credential</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Preview -->
+    <section class="articles-preview">
+        <div class="section-container">
+            <h2 class="section-title">
+                <span class="title-line"></span>
+                Martin's Favourite Articles
+                <span class="title-line"></span>
+            </h2>
+            <p class="section-subtitle">Hand-picked articles from the collection — methodology, tooling, and web attack breakdowns</p>
+            <div class="favourites-strip">
+
+                <a href="articles/bash-methodology-1/article.html" class="fav-card">
+                    <div class="fav-cover">
+                        <img src="articles/bash-methodology-1/images/main.png" alt="Bash Methodology" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="fav-placeholder"><div class="fav-placeholder-icon"></div></div>
+                        <span class="fav-series methodology">Methodology</span>
+                    </div>
+                    <div class="fav-body" data-index="01">
+                        <div class="fav-tags">
+                            <span>#linux</span><span>#bash</span><span>#cybersecurity</span>
+                        </div>
+                        <h3 class="fav-title">The Bash Scripting Guide Every Cybersecurity Beginner Needs</h3>
+                        <p class="fav-excerpt">A practical introduction to Bash scripting for cybersecurity beginners. Learn core Linux command-line skills, automation basics, and how scripting strengthens offensive and defensive workflows.</p>
+                        <div class="fav-meta">
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Jan 26, 2026
+                            </div>
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                12 min read
+                            </div>
+                        </div>
+                        <div class="fav-arrow">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="articles/cache-poisoning-via-http-headers/article.html" class="fav-card">
+                    <div class="fav-cover">
+                        <img src="articles/cache-poisoning-via-http-headers/images/main.png" alt="Cache Poisoning" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="fav-placeholder"><div class="fav-placeholder-icon"></div></div>
+                        <span class="fav-series exploring">Exploring Cybersecurity</span>
+                    </div>
+                    <div class="fav-body" data-index="02">
+                        <div class="fav-tags">
+                            <span>#web-security</span><span>#offensive-security</span><span>#http</span>
+                        </div>
+                        <h3 class="fav-title">Cache Poisoning: The Silent Web Attack You Need to Know About</h3>
+                        <p class="fav-excerpt">An in-depth look at web cache poisoning attacks — how they work, why misconfigurations happen, and how attackers exploit HTTP behavior to manipulate cached responses.</p>
+                        <div class="fav-meta">
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Jan 10, 2026
+                            </div>
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                6 min read
+                            </div>
+                        </div>
+                        <div class="fav-arrow">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="articles/burp-suite-methodology-1/article.html" class="fav-card">
+                    <div class="fav-cover">
+                        <img src="articles/burp-suite-methodology-1/images/main.png" alt="Burp Suite Methodology" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="fav-placeholder"><div class="fav-placeholder-icon"></div></div>
+                        <span class="fav-series methodology">Methodology</span>
+                    </div>
+                    <div class="fav-body" data-index="03">
+                        <div class="fav-tags">
+                            <span>#pentesting</span><span>#burp-suite</span><span>#web-security</span>
+                        </div>
+                        <h3 class="fav-title">Swiss Knife of the Pen-Tester, Practical Burp Suite Methodology — Part 1</h3>
+                        <p class="fav-excerpt">A practical breakdown of using Burp Suite for structured web application testing. Learn how to intercept, analyze, and manipulate HTTP traffic as part of a professional pentesting workflow.</p>
+                        <div class="fav-meta">
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Jan 22, 2026
+                            </div>
+                            <div class="fav-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                10 min read
+                            </div>
+                        </div>
+                        <div class="fav-arrow">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            <div class="section-cta" style="margin-top: 3rem;">
+                <a href="articles.html" class="btn btn-primary">View All Articles</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="section-container">
+            <h2 class="section-title">
+                <span class="title-line"></span>
+                Contact Me
+                <span class="title-line"></span>
+            </h2>
+            <div class="contact-form-wrapper">
+                <form action="https://formspree.io/f/mqedkvbp" method="POST" class="contact-form">
+                    <input type="hidden" name="_next" value="https://aegismartin.com/thankyou.html">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required placeholder="What's this about?">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required placeholder="Your message..." rows="6"></textarea>
+                    </div>
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAACZe_Q8Nv7CG-k6u"></div>
+                    <button type="submit" class="btn btn-primary btn-submit">Contact Aegis Martin</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="assets/js/particles.js"></script>
+    <script data-cfasync="false" src="assets/js/script.js"></script>
+    <script data-cfasync="false" src="assets/js/nav.js"></script>
+</body>
+</html>

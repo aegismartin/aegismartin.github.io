@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>A Practical cURL Methodology for Security Testing — Part 1: Observation | Aegis Martin</title>
+
+    <meta name="description" content="A practical cURL methodology for security testing — covering setup, foundations, verbose diagnostics, and full response analysis including status codes, headers, timing, and error leakage using DVWA.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js — syntax highlighting. Do NOT remove. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/article-page.css">
+</head>
+<body>
+
+    <!-- Lightbox overlay — do NOT remove, required for image zoom -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">&#x2715;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ════════════════════════════════════════════════════════
+         NAVBAR — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../../assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>    
+            <ul class="nav-links">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../articles.html" class="active">Articles</a></li>
+                <li><a href="../../aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE HERO — metadata header
+    ════════════════════════════════════════════════════════════ -->
+    <header class="article-hero">
+        <div class="hero-inner">
+
+            <div class="article-meta-row">
+                <span class="series-badge methodology">METHODOLOGY</span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Jan 13, 2026
+                </span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    11 min read
+                </span>
+            </div>
+
+            <h1 class="article-title">A Practical cURL Methodology for Security Testing — Part 1: Observation</h1>
+
+            <p class="article-excerpt">
+                This guide documents cURL techniques for authorized security testing — from reading verbose output and diagnosing connection failures, to auditing headers, interpreting status codes, and extracting intelligence from error messages using DVWA as a real target.
+            </p>
+
+            <div class="article-tags-row">
+                <span class="art-tag">#pentesting</span>
+                <span class="art-tag">#curl</span>
+                <span class="art-tag">#http</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE BODY — TOC sidebar + content column
+    ════════════════════════════════════════════════════════════ -->
+    <div class="article-layout">
+
+        <!-- TABLE OF CONTENTS — auto-generated by JS, do NOT edit -->
+        <aside class="toc-sidebar" id="tocSidebar">
+            <div class="toc-header">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Contents
+            </div>
+            <ul class="toc-list" id="tocList">
+                <!-- populated automatically from h2/h3 headings -->
+            </ul>
+        </aside>
+
+        <article class="article-content" id="articleContent">
+
+            <!-- Cover image -->
+            <div class="article-cover-inline">
+                <img src="images/main.png" alt="A Practical cURL Methodology for Security Testing — Part 1: Observation cover">
+            </div>
+
+            <p>
+                This guide documents cURL techniques for authorized security testing and penetration testing. I developed this methodology while practicing on intentionally vulnerable applications (DVWA) and testing environments. This is for security professionals, bug bounty hunters, and students learning offensive security for defensive purposes.
+            </p>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    You must have DVWA set up to follow along with the practical examples.
+                </div>
+            </div>
+
+            <h2 id="module-0-setup">Module 0: Setup</h2>
+
+            <p>We will start by understanding the tool we have on hand. To do so, let's see what our curl is capable of. We will use <code>--version</code>.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  ~ curl --version
+curl 8.11.1 (x86_64-redhat-linux-gnu) libcurl/8.11.1 OpenSSL/3.2.6 zlib/1.3.1.zlib-ng brotli/1.2.0 libidn2/2.3.8 libpsl/0.21.5 libssh/0.11.3/openssl/zlib nghttp2/1.64.0 OpenLDAP/2.6.10
+Release-Date: 2024-12-11
+Protocols: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns ldap ldaps mqtt pop3 pop3s rtsp scp sftp smb smbs smtp smtps telnet tftp ws wss
+Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets</code></pre>
+            </div>
+
+            <p>As you can probably guess I'm on Fedora Linux. But that aside — what does this information give us?</p>
+
+            <ol>
+                <li>
+                    <p><strong>Version.</strong> Mine is curl 8.11.1, released December 11th 2024. This matters because:</p>
+                    <ol>
+                        <li>Behavior changes between versions</li>
+                        <li>Flags appear/disappear</li>
+                        <li>TLS defaults change</li>
+                    </ol>
+                    <p>When something behaves differently on another system, this is your first check.</p>
+                </li>
+                <li>
+                    <p><strong>Protocols.</strong> My curl supports: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns ldap ldaps mqtt pop3 pop3s rtsp scp sftp smb smbs smtp smtps telnet tftp ws wss. This defines the attack surface curl can reach from this machine.</p>
+                </li>
+                <li>
+                    <p><strong>Features.</strong> This tells us whether a certain check will even work. For example, if we don't have the IPv6 feature then an IPv6 test is dead on arrival. We are mapping <strong>attack surface and capabilities.</strong></p>
+                </li>
+            </ol>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    curl is a <strong>protocol speaker</strong>. It connects to (IP, port) and speaks whatever the URL scheme says. The connection and request lifecycle is <strong>DNS → TCP → Protocol → Application</strong>. When troubleshooting, pay attention to this sequence.
+                </div>
+            </div>
+
+            <figure class="article-image">
+                <img src="images/1.png" alt="Diagram of the curl connection and request lifecycle: DNS, TCP, Protocol, Application">
+                <figcaption>curl connection and request lifecycle — DNS → TCP → Protocol → Application</figcaption>
+            </figure>
+
+            <h2 id="module-1-foundations">Module 1: Foundations</h2>
+
+            <p>Here we will try to fetch pages, read their headers, and if something goes wrong we will troubleshoot it.</p>
+
+            <div class="callout note">
+                <span class="callout-icon">📝</span>
+                <div class="callout-body">
+                    <strong>Note — stdout and stderr</strong>
+                    These will appear a few times in this material. If you don't know what they are:
+                    <ol>
+                        <li><strong>stdout</strong> refers to the default output stream in a computer program — the channel through which a program displays its output to the user or another program.</li>
+                        <li><strong>stderr</strong> (Standard Error) is a stream generated by programs when they encounter an error or exceptional condition. It's basically how programs communicate error messages to users, admins, and other programs.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <ul>
+                <li>
+                    <p>To get the page's HTML from the web server:</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl "https://httpbin.org" # HTML of the page will be printed to stdout</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p>We can force HTTP/1.1 and HTTP/2 and compare their differences. For deeper understanding we will use <strong>verbose mode</strong> to see how requests are being completed and at what stage a request went wrong (if it fails).</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl --http1.1 -v https://httpbin.org/ >> http1.1.txt 2&gt;&amp;1 # HTML saved to file
+curl --http2 -v https://httpbin.org/ >> http2.txt 2&gt;&amp;1    # 2>&amp;1 captures both stdout and stderr</code></pre>
+                    </div>
+
+                    <p>Here we saved the output of each request into separate files to compare their differences.</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜ Training-Camp diff http1.1.txt http2.txt
+# Even if body is identical, verbose logs reveal protocol negotiation, server selection, and framing differences.
+
+214,218d213
+&lt; &lt;!doctype html&gt;
+&lt; &lt;html lang=en&gt;
+&lt; &lt;title&gt;Redirecting...&lt;/title&gt;
+&lt; &lt;h1&gt;Redirecting...&lt;/h1&gt;
+&lt; &lt;p&gt;You should be redirected automatically to the target URL: &lt;a href="/en"&gt;/en&lt;/a&gt;. If not, click the link.
+223,225c218,220
+&lt; * IPv4: 52.55.226.129, 54.205.230.94, 98.85.201.92, 52.72.212.236, 54.158.135.159, 44.209.11.94
+&lt; *   Trying 52.55.226.129:443...
+&lt; * ALPN: curl offers http/1.1
+---
+&gt; * IPv4: 52.72.212.236, 54.205.230.94, 52.55.226.129, 98.85.201.92, 44.209.11.94, 54.158.135.159
+&gt; *   Trying 52.72.212.236:443...
+&gt; * ALPN: curl offers h2,http/1.1
+233c228
+&lt; { [110 bytes data]
+---
+&gt; { [104 bytes data]
+249c244
+&lt; * ALPN: server accepted http/1.1
+---
+&gt; * ALPN: server accepted h2
+260,261c255,263
+&lt; * Connected to httpbin.org (52.55.226.129) port 443
+&lt; * using HTTP/1.x
+---
+&gt; * Connected to httpbin.org (52.72.212.236) port 443
+&gt; * using HTTP/2
+&gt; * [HTTP/2] [1] OPENED stream for https://httpbin.org/
+&gt; * [HTTP/2] [1] [:method: GET]
+&gt; * [HTTP/2] [1] [:scheme: https]
+&gt; * [HTTP/2] [1] [:authority: httpbin.org]
+&gt; * [HTTP/2] [1] [:path: /]
+&gt; * [HTTP/2] [1] [user-agent: curl/8.11.1]
+&gt; * [HTTP/2] [1] [accept: */*]
+263c265
+&lt; &gt; GET / HTTP/1.1
+---
+&gt; &gt; GET / HTTP/2
+267a270
+&gt; { [5 bytes data]
+270,277c273,279
+&lt; &lt; HTTP/1.1 200 OK
+&lt; &lt; Date: Sat, 03 Jan 2026 17:56:59 GMT
+&lt; &lt; Content-Type: text/html; charset=utf-8
+&lt; &lt; Content-Length: 9593
+&lt; &lt; Connection: keep-alive
+&lt; &lt; Server: gunicorn/19.9.0
+&lt; &lt; Access-Control-Allow-Origin: *
+&lt; &lt; Access-Control-Allow-Credentials: true
+---
+&gt; &lt; HTTP/2 200
+&gt; &lt; date: Sat, 03 Jan 2026 17:56:41 GMT
+&gt; &lt; content-type: text/html; charset=utf-8
+&gt; &lt; content-length: 9593
+&gt; &lt; server: gunicorn/19.9.0
+&gt; &lt; access-control-allow-origin: *
+&gt; &lt; access-control-allow-credentials: true
+279c281
+&lt; { [5 bytes data]
+---
+&gt; { [8192 bytes data]
+445c447
+100  9593  100  9593    0     0   8745      0  0:00:01  0:00:01 --:--:--  8752
+---
+100  9593  100  9593    0     0  15028      0 --:--:-- --:--:-- --:--:-- 15036</code></pre>
+                    </div>
+
+                    <p>We won't dwell on what's different — but if you want to and don't know how to read <code>diff</code>, check the command's manual. It won't take more than 2 minutes.</p>
+                </li>
+
+                <li>
+                    <p>You should already know what security headers are from our previous notes. To fetch them we use <code>-I</code>.</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  Training-Camp curl -I https://httpbin.org
+HTTP/2 200
+date: Sat, 03 Jan 2026 17:51:15 GMT
+content-type: text/html; charset=utf-8
+content-length: 9593
+server: gunicorn/19.9.0
+access-control-allow-origin: *
+access-control-allow-credentials: true</code></pre>
+                    </div>
+
+                    <p>These headers reveal what the server exposes by default and what it forgot to hide.</p>
+                </li>
+
+                <li>
+                    <p>For security analysis it's usually important to know how the server reacts to both 200 OK and 404 Error responses.</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  Training-Camp curl -v https://httpbin.org >> 200.txt 2&gt;&amp;1
+➜  Training-Camp curl -v https://httpbin.org/noneexistingdirectory321 >> 404.txt 2&gt;&amp;1</code></pre>
+                    </div>
+                </li>
+            </ul>
+
+            <h2 id="module-2-verbose-diagnostics">Module 2: Verbose Diagnostics</h2>
+
+            <p>In this section we will learn to read verbose output and troubleshoot each layer of the <strong>connection and request lifecycle</strong>.</p>
+
+            <ol>
+                <li>
+                    <p><strong>DNS failure.</strong></p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  Training-Camp curl -v http://nonexistent.example/ # Our operation stops immediately
+* Could not resolve host: nonexistent.example
+* shutting down connection
+curl: (6) Could not resolve host: nonexistent.example</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p><strong>TCP timeout.</strong> For this we will use an unreachable host:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  Training-Camp curl -v http://10.255.255.1/ # No DNS resolve needed — scanning an IP
+*   Trying 10.255.255.1:80... # This took a couple minutes
+* connect to 10.255.255.1 port 80 from 192.168.15.9 port 52694 failed: Connection timed out
+* Failed to connect to 10.255.255.1 port 80 after 134377 ms: Could not connect to server
+* closing connection #0
+curl: (28) Failed to connect to 10.255.255.1 port 80 after 134377 ms: Could not connect to server</code></pre>
+                    </div>
+
+                    <p>Another example — DNS resolves fine but the port is closed:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  Training-Camp curl -v https://httpbin.org:8000/
+* Host httpbin.org:8000 was resolved. # DNS resolution succeeded
+* IPv6: (none)
+* IPv4: 98.85.201.92, 44.209.11.94, 52.72.212.236, 52.55.226.129, 54.158.135.159, 54.205.230.94
+*   Trying 98.85.201.92:8000...
+* connect to 98.85.201.92 port 8000 from 192.168.15.9 port 39202 failed: Connection timed out
+*   Trying 44.209.11.94:8000... # Will continue until every IP is checked (6 IPv4s in our case)</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p><strong>Successful connection.</strong> Now let's see what a full successful connection looks like and how to read it:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">➜  ~ curl -v https://httpbin.org                                      # Initial command
+* Host httpbin.org:443 was resolved.                                  # DNS resolution succeeded
+* IPv6: (none)
+* IPv4: 52.72.212.236, 54.158.135.159, 98.85.201.92, 52.55.226.129, 54.205.230.94, 44.209.11.94
+*   Trying 52.72.212.236:443...
+* ALPN: curl offers h2,http/1.1                                       # ALPN negotiation begins after TCP succeeds, during TLS handshake
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):                    # TLS handshake started
+*  CAfile: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+*  CApath: none
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):                     # Mixed TLS version lines can appear due to handshake internals
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):                       # TLS handshake finished
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256 / secp256r1 / rsaEncryption
+* ALPN: server accepted h2                                            # ALPN connection accepted
+* Server certificate:                                                 # curl shows host certificate info
+*  subject: CN=httpbin.org
+*  start date: Jul 20 00:00:00 2025 GMT
+*  expire date: Aug 17 23:59:59 2026 GMT
+*  subjectAltName: host "httpbin.org" matched certs "httpbin.org"
+*  issuer: C=US; O=Amazon; CN=Amazon RSA 2048 M03
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to httpbin.org (52.72.212.236) port 443                  # Connection confirmed
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://httpbin.org/                # HTTP/2 stream data
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: httpbin.org]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.11.1]
+* [HTTP/2] [1] [accept: */*]
+&gt; GET / HTTP/2                                                        # Our request
+&gt; Host: httpbin.org
+&gt; User-Agent: curl/8.11.1
+&gt; Accept: */*
+&gt;
+* Request completely sent off
+&lt; HTTP/2 200                                                          # Response headers from host
+&lt; date: Sun, 04 Jan 2026 09:18:14 GMT
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 9593
+&lt; server: gunicorn/19.9.0
+&lt; access-control-allow-origin: *
+&lt; access-control-allow-credentials: true
+&lt;
+&lt;!DOCTYPE html&gt;                                                       # Host HTML body
+&lt;html lang="en"&gt;
+
+&lt;head&gt;
+...</code></pre>
+                    </div>
+                </li>
+            </ol>
+
+            <h2 id="module-3-response-analysis">Module 3: Response Analysis</h2>
+
+            <p>In this section I will show you how to perform response analysis on specific examples and targets.</p>
+
+            <h3 id="dvwa-login">DVWA Login</h3>
+
+            <p>Browsers maintain session state automatically. curl doesn't. To be able to log into DVWA you have to create a cookie that curl will use to authenticate you.</p>
+
+            <figure class="article-image">
+                <img src="images/2.svg" alt="Diagram showing DVWA session flow: fetch login page, extract CSRF token, authenticate, use cookie">
+                <figcaption>DVWA auth flow with curl — fetch, extract CSRF token, authenticate, then operate with the cookie</figcaption>
+            </figure>
+
+            <ol>
+                <li>
+                    <p>First we fetch the login page and save it. Reading the HTML reveals that besides username and password, DVWA also has a CSRF token required for auth.</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -c cookies.txt -s http://localhost:8081/login.php -o login.html
+grep user_token login.html    # find the token
+
+&lt;input type='hidden' name='user_token' value='8b9d5057c79412598b062e9aa28c93ea' /&gt;</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p>Now authenticate by inserting the data into our cookie:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -c cookies.txt -b cookies.txt \
+  -d "username=admin&amp;password=password&amp;Login=Login&amp;user_token=8b9d5057c79412598b062e9aa28c93ea" \
+  http://localhost:8081/login.php -o /dev/null</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p>Now we can work with curl properly using our authenticated session:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -b cookies.txt http://localhost:8081/index.php</code></pre>
+                    </div>
+                </li>
+            </ol>
+
+            <h3 id="status-codes">Section 1: HTTP Status Codes as Behavioral Signals</h3>
+
+            <p>Status codes tell you how the server processed your request.</p>
+
+            <h4>200 OK — Success (or Silent Failure)</h4>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I https://httpbin.org/status/200</code></pre>
+            </div>
+
+            <p><strong>What it means:</strong> Request processed successfully — OR server failed open (dangerous).</p>
+
+            <p><strong>Security implications:</strong> 200 on an authentication bypass attempt = potential vulnerability. 200 with empty/unexpected body = logic flaw. 200 when expecting 403/401 = broken access control.</p>
+
+            <p><strong>Test pattern:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># Try accessing admin endpoint
+curl -I https://target.com/admin
+# If 200 instead of 403 → broken authz
+
+# Try invalid input
+curl -I "https://target.com/api?id=../../etc/passwd"
+# If 200 instead of 400 → input validation missing</code></pre>
+            </div>
+
+            <h4>302/301 — Redirects</h4>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I https://httpbin.org/redirect/1</code></pre>
+            </div>
+
+            <p><strong>What it means:</strong> Server is sending you somewhere else. Often used for authentication flows. Can hide logic flaws.</p>
+
+            <p><strong>Security implications:</strong> Redirect to login = you hit a protected resource. Redirect with Set-Cookie = session state changed. Location header content = potential open redirect.</p>
+
+            <p><strong>Test pattern:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># Check where auth failure redirects
+➜  ~ curl -I http://localhost:8081    # this is DVWA
+HTTP/1.1 302 Found
+Date: Wed, 07 Jan 2026 05:43:42 GMT
+Server: Apache/2.4.25 (Debian)
+Set-Cookie: PHPSESSID=cdcups8atl3ncoj2rqus7hprq5; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PHPSESSID=cdcups8atl3ncoj2rqus7hprq5; path=/
+Set-Cookie: security=low
+Location: login.php    # hardcoded — no redirect manipulation possible
+Content-Type: text/html; charset=UTF-8</code></pre>
+            </div>
+
+            <p>If the redirect is not hardcoded, you can try redirect manipulation:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I "https://target.com/login?redirect=https://evil.com"</code></pre>
+            </div>
+
+            <div class="callout note">
+                <span class="callout-icon">📝</span>
+                <div class="callout-body">
+                    <strong>Note</strong>
+                    The redirect parameter doesn't have to be called <code>redirect</code> — it can also be <code>next</code>, <code>url</code>, <code>return</code>, <code>dest</code>, <code>continue</code>. Check all variants to be thorough.
+                </div>
+            </div>
+
+            <p>Full redirect chain example using <code>-L</code> (follow redirects) with <code>-I</code>:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  Training-Camp curl -IL "https://httpbin.org/redirect-to?url=https://google.com"
+HTTP/2 302                               # Server tells us it's about to redirect
+date: Wed, 07 Jan 2026 08:10:16 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+location: https://google.com
+server: gunicorn/19.9.0
+access-control-allow-origin: *
+access-control-allow-credentials: true
+
+HTTP/2 301                               # Redirected permanently
+location: https://www.google.com/
+content-type: text/html; charset=UTF-8
+content-security-policy-report-only: object-src 'none';base-uri 'self';script-src 'nonce-4pKn9YTGRrE0cJGq7I5smg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+date: Wed, 07 Jan 2026 08:10:17 GMT
+expires: Fri, 06 Feb 2026 08:10:17 GMT
+cache-control: public, max-age=2592000
+server: gws
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+
+HTTP/2 200                               # We are at google.com
+content-type: text/html; charset=ISO-8859-1
+content-security-policy-report-only: object-src 'none';base-uri 'self';script-src 'nonce-ZdfTfpwWPExEIzghCDuBXg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+date: Wed, 07 Jan 2026 08:10:17 GMT
+server: gws
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+cache-control: private
+set-cookie: AEC=AaJma5ukZwNRv-5N7SWv3ZJkvrZP10c4fZIiIx9Pi3FN778Q1MRyvQ1yQw; expires=Mon, 06-Jul-2026 08:10:17 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax</code></pre>
+            </div>
+
+            <h4>401 vs 403 — Authentication vs Authorization</h4>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I "https://httpbin.org/status/401"
+HTTP/2 401
+date: Wed, 07 Jan 2026 07:53:26 GMT
+content-length: 0
+server: gunicorn/19.9.0
+www-authenticate: Basic realm="Fake Realm"
+access-control-allow-origin: *
+access-control-allow-credentials: true
+
+curl -I "https://httpbin.org/status/403"
+HTTP/2 403
+date: Wed, 07 Jan 2026 07:52:55 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+server: gunicorn/19.9.0
+access-control-allow-origin: *
+access-control-allow-credentials: true</code></pre>
+            </div>
+
+            <p><strong>What they mean:</strong> 401 = "I don't know who you are" (authentication failure). 403 = "I know who you are, but you can't do this" (authorization failure).</p>
+
+            <p><strong>Security implications:</strong> 401 → add authentication, might work. 403 → you're authenticated but lack permission (IDOR testing target). 403 on one method, try another (GET → POST → PUT).</p>
+
+            <p><strong>Test pattern:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># No auth
+curl -I https://target.com/api/users/123
+# Response: 401
+
+# With auth
+curl -I -H "Authorization: Bearer TOKEN" https://target.com/api/users/123
+# Response: 403 → authorization check exists, test for IDOR
+
+# Try different user ID
+curl -I -H "Authorization: Bearer TOKEN" https://target.com/api/users/456
+# Response: 200 → IDOR vulnerability found</code></pre>
+            </div>
+
+            <h4>400 — Bad Request</h4>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I "https://httpbin.org/status/400"</code></pre>
+            </div>
+
+            <p><strong>What it means:</strong> Server rejected your input early. Input validation triggered.</p>
+
+            <p><strong>Security implications:</strong> 400 = validation exists (good). But what validation? Try variations. Does it validate everything or just some fields?</p>
+
+            <p><strong>Test pattern:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># Malformed JSON
+curl -X POST -d "not-json" https://target.com/api
+
+# Missing required field
+curl -X POST -d '{"username":"test"}' https://target.com/api
+
+# Type mismatch
+curl -X POST -d '{"age":"not-a-number"}' https://target.com/api</code></pre>
+            </div>
+
+            <h4>500 — Internal Server Error</h4>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl -I https://httpbin.org/status/500
+HTTP/2 500
+date: Wed, 07 Jan 2026 08:23:01 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+server: gunicorn/19.9.0
+access-control-allow-origin: *
+access-control-allow-credentials: true</code></pre>
+            </div>
+
+            <p><strong>What it means:</strong> You broke something. Backend exception occurred. This is <strong>valuable.</strong></p>
+
+            <p><strong>Security implications:</strong> Input reached backend logic. Potential injection point. The error might leak information.</p>
+
+            <p><strong>Test pattern:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># SQL injection attempt
+curl "https://target.com/search?q=test'"
+# Response: 500 → query reached database
+
+# Path traversal
+curl "https://target.com/file?path=../../../../etc/passwd"
+# Response: 500 → file operation attempted
+
+# Check response body for stack traces
+curl -v "https://target.com/search?q=test'" 2&gt;&amp;1 | grep -i "error\|exception\|stack"</code></pre>
+            </div>
+
+            <h3 id="security-headers-audit">Section 2: Security Headers Audit</h3>
+
+            <p>Missing security headers = attack surface exposed.</p>
+
+            <p><strong>Testing DVWA:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  ~ curl -I http://localhost:8081
+Server: Apache/2.4.25 (Debian)
+X-Powered-By: PHP/7.0.33
+Set-Cookie: PHPSESSID=abc; path=/
+Set-Cookie: security=low</code></pre>
+            </div>
+
+            <p><strong>Security issues found:</strong></p>
+
+            <ul>
+                <li><code>Server: Apache/2.4.25</code> → Version disclosed (search for CVEs)</li>
+                <li><code>X-Powered-By: PHP/7.0.33</code> → Old PHP version (likely vulnerable)</li>
+                <li>Cookie missing <code>HttpOnly</code> → XSS can steal session</li>
+                <li>Cookie missing <code>Secure</code> → Can be sent over HTTP</li>
+                <li>Cookie missing <code>SameSite</code> → CSRF vulnerable</li>
+                <li>No <code>Content-Security-Policy</code> → XSS protection missing</li>
+                <li>No <code>X-Frame-Options</code> → Clickjacking possible</li>
+                <li>No <code>Strict-Transport-Security</code> → HTTPS not enforced</li>
+            </ul>
+
+            <p><strong>Compare with httpbin (better configured):</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  ~ curl -I https://httpbin.org
+server: gunicorn/19.9.0
+access-control-allow-origin: *
+access-control-allow-credentials: true</code></pre>
+            </div>
+
+            <p>Still shows server software, but no version number leaking detailed CVE info.</p>
+
+            <figure class="article-image">
+                <img src="images/3.svg" alt="Security headers audit checklist showing missing vs present protections">
+                <figcaption>Security headers audit — what's present, what's missing, and what each gap enables</figcaption>
+            </figure>
+
+            <p><strong>What to look for:</strong></p>
+            <ul>
+                <li><code>Server</code> / <code>X-Powered-By</code> headers → Information disclosure</li>
+                <li><code>Set-Cookie</code> flags → Session security</li>
+                <li><code>CSP</code> / <code>X-Frame-Options</code> / <code>HSTS</code> → Missing protections</li>
+            </ul>
+
+            <h3 id="response-timing">Section 3: Response Timing Patterns</h3>
+
+            <p>Timing reveals backend behavior.</p>
+
+            <p><strong>Basic timing measurement:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># Create timing template
+cat > curl-timing.txt &lt;&lt; EOF
+time_total: %{time_total}s\n
+EOF
+
+# Test endpoint
+curl -w "@curl-timing.txt" -o /dev/null -s https://httpbin.org/delay/2
+# Output: time_total: 2.1s</code></pre>
+            </div>
+
+            <p><strong>What timing tells you:</strong></p>
+
+            <p><strong>Fast response (&lt; 100ms):</strong> Input rejected early. Validation before backend logic. Good for security.</p>
+
+            <p><strong>Slow response (&gt; 2s):</strong> Backend processing occurred. Database query executed. Potential for timing-based attacks.</p>
+
+            <p><strong>Testing DVWA:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash"># Normal SQLi request
+time curl -b cookies.txt \
+  "http://localhost:8081/vulnerabilities/sqli/?id=1&amp;Submit=Submit"
+
+# With SLEEP injection (tests blind SQLi)
+time curl -b cookies.txt \
+  "http://localhost:8081/vulnerabilities/sqli_blind/?id=1' AND SLEEP(5)--&amp;Submit=Submit"
+# If this takes 5+ seconds longer → SQLi confirmed</code></pre>
+            </div>
+
+            <p><strong>Pattern:</strong> If you can control response time, you can extract data blindly.</p>
+
+            <div class="callout note">
+                <span class="callout-icon">📝</span>
+                <div class="callout-body">
+                    <strong>Note</strong>
+                    Timing-based exploitation will be covered in Part 2.
+                </div>
+            </div>
+
+            <h3 id="error-message-analysis">Section 4: Error Message Analysis</h3>
+
+            <p>Errors leak implementation details.</p>
+
+            <p><strong>Testing SQL errors in DVWA:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  ~ curl -b cookies.txt \
+  "http://localhost:8081/vulnerabilities/sqli/?id=1'&amp;Submit=Submit"
+
+# Response body contains:
+# "You have an error in your SQL syntax; check the manual that
+# corresponds to your MySQL server version for the right syntax
+# to use near ''1''' at line 1"</code></pre>
+            </div>
+
+            <p><strong>What this reveals:</strong> Database type is MySQL. Query structure leaked. Input reaches the SQL query directly. SQL injection confirmed.</p>
+
+            <p><strong>Testing file inclusion errors:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">➜  ~ curl -b cookies.txt \
+  "http://localhost:8081/vulnerabilities/fi/?page=/etc/passwd"
+
+# Response might contain:
+# "Warning: include(/etc/passwd): failed to open stream"</code></pre>
+            </div>
+
+            <p><strong>What this reveals:</strong> Absolute paths in error messages. File system structure exposed. File inclusion vulnerability confirmed.</p>
+
+            <p><strong>What to grep for:</strong></p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">BASH</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-bash">curl http://target.com/test | grep -i "error\|warning\|exception\|fatal\|mysql\|postgresql\|syntax"</code></pre>
+            </div>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    Verbose errors are intelligence goldmines. Production systems should hide error details.
+                </div>
+            </div>
+
+            <hr>
+
+            <h2 id="conclusion">Conclusion</h2>
+
+            <p>What we covered in this part:</p>
+
+            <ul>
+                <li>Reading verbose output to troubleshoot connections</li>
+                <li>Interpreting status codes for security implications</li>
+                <li>Auditing headers for missing protections</li>
+                <li>Recognizing error messages that leak information</li>
+                <li>Understanding session state management</li>
+            </ul>
+
+            <p>You can now observe and analyze server behavior with curl. Part 2 will teach you to <strong>actively exploit</strong> what you observe.</p>
+
+            <div class="callout warning">
+                <span class="callout-icon">⚠</span>
+                <div class="callout-body">
+                    <strong>Warning</strong>
+                    Only test against systems you own or have explicit written permission to test.
+                </div>
+            </div>
+
+        </article>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE FOOTER — back link + share buttons
+    ════════════════════════════════════════════════════════════ -->
+    <section class="article-footer-section">
+        <div class="article-footer-divider"></div>
+        <div class="article-footer-meta">
+
+            <a href="../../articles.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Articles
+            </a>
+
+            <div class="article-share">
+                <span class="share-label">Share</span>
+                <a href="https://twitter.com/intent/tweet?text=cURL+Methodology+Part+1%3A+Observation&url=https://aegismartin.com/articles/curl-part-1" target="_blank" rel="noopener" class="share-btn" title="Share on X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://aegismartin.com/articles/curl-part-1" target="_blank" rel="noopener" class="share-btn" title="Share on LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════
+         FOOTER — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js — do NOT remove -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script data-cfasync="false" src="../../assets/js/particles.js"></script>
+    <script data-cfasync="false" src="../../assets/js/article-page.js"></script>
+    <script data-cfasync="false" src="../../assets/js/nav.js"></script>   
+
+</body>
+</html>

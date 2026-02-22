@@ -1,0 +1,1048 @@
+/* ═══════════════════════════════════════════════════════════
+   STYLE.CSS — Index page specific styles
+   Aegis Martin Portfolio
+   ═══════════════════════════════════════════════════════════ */
+
+@import './base.css';
+
+/* ── HERO SECTION ───────────────────────────────────────────── */
+.hero {
+    background: none;
+}
+
+/* ── ABOUT SECTION ──────────────────────────────────────────── */
+.about {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 5rem;
+    align-items: start;
+}
+
+.about-text {
+    animation: fadeInLeft 0.8s ease;
+}
+
+.about-text h2 {
+    margin-top: 2.5rem;
+}
+
+.about-text h2:first-child {
+    margin-top: 0;
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    line-height: 1.8;
+}
+
+.about-stats {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    animation: fadeInRight 0.8s ease 0.2s backwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-stats::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--accent-purple-glow), transparent 50%);
+    opacity: 0.1;
+    animation: rotateBg 20s linear infinite;
+}
+
+.skills-header {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--accent-purple);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.skill-item {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.skill-item:last-child {
+    margin-bottom: 0;
+}
+
+.skill-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.skill-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.skill-level {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.skill-bar {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    border-radius: 10px;
+    transition: width 1s ease;
+    box-shadow: 0 0 10px var(--accent-purple-glow);
+    position: relative;
+}
+
+.skill-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* ── AEGISCLI PREVIEW ───────────────────────────────────────── */
+.aegiscli-preview {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.cli-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+.cli-info {
+    animation: fadeInLeft 0.8s ease;
+}
+
+.cli-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.cli-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.cli-feature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.cli-feature svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-purple);
+    flex-shrink: 0;
+}
+
+/* ── CERTIFICATES SECTION ───────────────────────────────────── */
+.certificates {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ── CARD BASE ── */
+.cert-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    cursor: pointer;
+}
+
+.cert-card:nth-child(1) { animation-delay: 0.1s; }
+.cert-card:nth-child(2) { animation-delay: 0.2s; }
+
+/* Colored top accent bar */
+.cert-top-bar {
+    height: 3px;
+    width: 100%;
+    background: var(--border-color);
+    transition: background 0.3s ease;
+}
+
+.cert-card--google:hover  { border-color: var(--accent-purple); box-shadow: 0 12px 40px var(--accent-purple-glow); transform: translateY(-4px); }
+.cert-card--google:hover .cert-top-bar { background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); }
+
+.cert-card--thm:hover { border-color: var(--accent-green); box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2); transform: translateY(-4px); }
+.cert-card--thm:hover .cert-top-bar { background: linear-gradient(90deg, var(--accent-green), var(--accent-blue)); }
+
+/* ── HEADER ── */
+.cert-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 1.8rem 1rem;
+}
+
+.cert-logo-wrap {
+    width: 46px;
+    height: 46px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cert-logo-wrap svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.cert-card--google:hover .cert-logo-wrap {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 16px var(--accent-purple-glow);
+}
+.cert-card--google:hover .cert-logo-wrap svg { color: var(--accent-purple); }
+
+.cert-card--thm:hover .cert-logo-wrap {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+}
+.cert-card--thm:hover .cert-logo-wrap svg { color: var(--accent-green); }
+
+.cert-issuer-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.cert-issuer-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+}
+
+.cert-issuer-name {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.cert-arrow {
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.cert-arrow svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+}
+
+.cert-card:hover .cert-arrow { opacity: 1; transform: translate(0, 0); }
+.cert-card--google:hover .cert-arrow svg { color: var(--accent-purple); }
+.cert-card--thm:hover .cert-arrow svg    { color: var(--accent-green); }
+
+/* ── BODY ── */
+.cert-body {
+    padding: 0.5rem 1.8rem 1.2rem;
+    flex: 1;
+}
+
+.cert-badge {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+}
+
+.cert-badge--thm {
+    color: var(--accent-green);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.cert-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.cert-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.skill-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+}
+
+.cert-card--google:hover .skill-tag {
+    color: var(--accent-purple);
+    border-color: rgba(168, 85, 247, 0.4);
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.cert-card--thm:hover .skill-tag {
+    color: var(--accent-green);
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+/* ── FOOTER ── */
+.cert-footer {
+    padding: 0.9rem 1.8rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: border-color 0.3s ease;
+}
+
+.cert-verify-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    transition: color 0.25s ease;
+}
+
+.cert-card--google:hover .cert-footer { border-color: rgba(168, 85, 247, 0.2); }
+.cert-card--google:hover .cert-verify-text { color: var(--accent-purple); }
+
+.cert-card--thm:hover .cert-footer { border-color: rgba(16, 185, 129, 0.2); }
+.cert-card--thm:hover .cert-verify-text { color: var(--accent-green); }
+
+/* ── ARTICLES PREVIEW ───────────────────────────────────────── */
+.articles-preview {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-top: -2.5rem;
+    margin-bottom: 3rem;
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.article-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.article-card:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+    transform: translateY(-5px);
+}
+
+.article-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid var(--accent-purple);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.article-tag.blue {
+    color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-blue);
+}
+
+.article-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.article-excerpt {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.article-meta {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.section-cta {
+    text-align: center;
+}
+
+/* ── CONTACT SECTION ────────────────────────────────────────── */
+.contact {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.contact-form-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.contact-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 20px var(--accent-purple-glow);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.btn-submit {
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+/* ── FAVOURITES SECTION ─────────────────────────────────────── */
+.favourites-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.fav-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    min-height: 240px;
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: border-color 0.4s ease;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    text-decoration: none;
+    color: inherit;
+}
+
+.fav-card:first-child {
+    border-top: 1px solid var(--border-color);
+}
+
+.fav-card:nth-child(1) { animation-delay: 0.1s; }
+.fav-card:nth-child(2) { animation-delay: 0.22s; }
+.fav-card:nth-child(3) { animation-delay: 0.34s; }
+
+.fav-card:hover {
+    border-color: var(--accent-purple);
+}
+
+/* — Image side — */
+.fav-cover {
+    position: relative;
+    overflow: hidden;
+}
+
+.fav-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    filter: brightness(0.85);
+}
+
+.fav-card:hover .fav-cover img {
+    transform: scale(1.06);
+    filter: brightness(1);
+}
+
+/* Scanline sweep on hover */
+.fav-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgba(168, 85, 247, 0.18) 50%,
+        transparent 65%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.fav-card:hover .fav-cover::after {
+    transform: translateX(150%);
+}
+
+/* Placeholder if image missing */
+.fav-placeholder {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+}
+
+.fav-placeholder-icon {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    opacity: 0.25;
+}
+
+/* — Series badge on image — */
+.fav-series {
+    position: absolute;
+    top: 1.1rem;
+    left: 1.1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 2;
+}
+
+.fav-series.methodology { background: rgba(236, 72, 153, 0.85); color: #fff; }
+.fav-series.exploring   { background: rgba(59, 130, 246, 0.85);  color: #fff; }
+.fav-series.developer   { background: rgba(34, 197, 94, 0.85);   color: #fff; }
+
+/* — Text side — */
+.fav-body {
+    position: relative;
+    padding: 2.5rem 3rem 2.5rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    overflow: hidden;
+}
+
+/* Ghost number */
+.fav-body::before {
+    content: attr(data-index);
+    position: absolute;
+    right: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 10rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-primary);
+    opacity: 0.03;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    user-select: none;
+}
+
+.fav-card:hover .fav-body::before {
+    opacity: 0.06;
+}
+
+/* Accent line that loads in */
+.fav-body::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-purple);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 12px var(--accent-purple-glow);
+}
+
+.fav-card:hover .fav-body::after {
+    transform: scaleY(1);
+}
+
+.fav-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.fav-tags span {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.fav-card:hover .fav-tags span {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.fav-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    transition: color 0.3s ease;
+}
+
+.fav-card:hover .fav-title {
+    color: var(--accent-purple);
+}
+
+.fav-excerpt {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 520px;
+}
+
+.fav-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 0.25rem;
+}
+
+.fav-meta-item {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.fav-meta-item svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.6;
+}
+
+.fav-arrow {
+    position: absolute;
+    right: 2.5rem;
+    bottom: 2rem;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translate(8px, 8px);
+}
+
+.fav-arrow svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.fav-card:hover .fav-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+    border-color: var(--accent-purple);
+}
+
+.fav-card:hover .fav-arrow svg {
+    color: var(--accent-purple);
+}
+
+/* ── KEYFRAMES INDEX-SPECIFIC ───────────────────────────────── */
+@keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%);  }
+}
+
+@keyframes rotateBg {
+    from { transform: rotate(0deg);   }
+    to   { transform: rotate(360deg); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE — INDEX PAGE (style.css)
+   Breakpoints: 1280 | 1024 | 768 | 640 | 480 | 380
+   ════════════════════════════════════════════════════════════ */
+
+/* ── 1280px : Large desktop tightening ───────────────────── */
+@media (max-width: 1280px) {
+    .fav-card {
+        grid-template-columns: 360px 1fr;
+    }
+
+    .about-content {
+        gap: 3.5rem;
+    }
+
+    .cli-content {
+        gap: 3.5rem;
+    }
+}
+
+/* ── 1024px : Tablet landscape ───────────────────────────── */
+@media (max-width: 1024px) {
+    /* Stack two-column layouts */
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .cli-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    /* Terminal goes on top when stacked */
+    .cli-terminal {
+        order: -1;
+    }
+
+    /* Favourites: narrow image column */
+    .fav-card {
+        grid-template-columns: 300px 1fr;
+    }
+
+    /* Cert grid: 2 columns if space allows */
+    .cert-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* ── 768px : Tablet portrait ─────────────────────────────── */
+@media (max-width: 768px) {
+    /* Certs and homepage article previews go single column */
+    .cert-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Contact form */
+    .contact-form {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Favourites: full-width stacked */
+    .fav-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: 220px auto;
+    }
+
+    .fav-cover {
+        order: 0;
+    }
+
+    .fav-body {
+        order: 1;
+        padding: 1.75rem 1.5rem 2.5rem;
+    }
+
+    .fav-body::before {
+        font-size: 7rem;
+        opacity: 0.04;
+    }
+
+    .fav-arrow {
+        right: 1.5rem;
+        bottom: 1.25rem;
+    }
+
+    .fav-title {
+        font-size: 1.3rem;
+    }
+
+    /* About stats */
+    .about-stats {
+        padding: 2rem;
+    }
+
+    /* CLI features */
+    .cli-description {
+        font-size: 1rem;
+    }
+}
+
+/* ── 640px : Mobile ──────────────────────────────────────── */
+@media (max-width: 640px) {
+    /* Favourites row: shorter image */
+    .fav-card {
+        grid-template-rows: 180px auto;
+    }
+
+    .fav-title {
+        font-size: 1.2rem;
+    }
+
+    .fav-excerpt {
+        display: none; /* hide teaser on tiny cards — saves space */
+    }
+
+    /* Contact form */
+    .contact-form {
+        padding: 1.75rem 1.25rem;
+        border-radius: 12px;
+    }
+
+    /* Cert card body text */
+    .cert-title {
+        font-size: 1.25rem;
+    }
+
+    /* About section */
+    .about-text p {
+        font-size: 1rem;
+    }
+
+    /* CLI feature items */
+    .cli-feature {
+        font-size: 0.95rem;
+    }
+}
+
+/* ── 480px : Small phones ────────────────────────────────── */
+@media (max-width: 480px) {
+    .fav-card {
+        grid-template-rows: 160px auto;
+    }
+
+    .fav-body {
+        padding: 1.5rem 1.25rem 2.25rem;
+        gap: 0.75rem;
+    }
+
+    .fav-body::before {
+        font-size: 5rem;
+    }
+
+    .fav-meta {
+        gap: 1rem;
+    }
+
+    .hero-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    /* Cert grid: let the card breathe on tiny screens */
+    .cert-header {
+        padding: 1.25rem 1.25rem 0.75rem;
+    }
+
+    .cert-body {
+        padding: 0.5rem 1.25rem 1rem;
+    }
+
+    .cert-title {
+        font-size: 1.15rem;
+    }
+
+    .contact-form {
+        padding: 1.5rem 1rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 0.9rem;
+    }
+
+    /* Skill bar section */
+    .about-stats {
+        padding: 1.5rem;
+    }
+}
+
+/* ── 380px : Tiny phones ─────────────────────────────────── */
+@media (max-width: 380px) {
+    .fav-card {
+        grid-template-rows: 140px auto;
+    }
+
+    .fav-title {
+        font-size: 1.1rem;
+    }
+
+    .cert-title {
+        font-size: 1.1rem;
+    }
+
+    .cert-issuer-name {
+        font-size: 0.9rem;
+    }
+
+    .series-btn {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.68rem;
+    }
+}

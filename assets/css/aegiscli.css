@@ -1,0 +1,1778 @@
+/* ═══════════════════════════════════════════════════════════
+   AEGISCLI.CSS — AegisCLI page specific styles
+   Aegis Martin Portfolio
+   ═══════════════════════════════════════════════════════════ */
+
+@import './base.css';
+
+/* ── HERO ────────────────────────────────────────────────────── */
+.animated-bg {
+    display: none;
+}
+
+@media (min-width: 1025px) {
+    .animated-bg {
+        display: block;
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(168,85,247,0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(124,58,237,0.15) 0%, transparent 50%);
+        animation: floatBg 20s ease-in-out infinite;
+        z-index: -1;
+    }
+}
+
+.hero-tag {
+    animation: pulse-border 2s ease-in-out infinite;
+}
+
+.hero-title {
+    font-size: 4rem;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.5rem;
+}
+
+/* ── ARCHITECTURE ────────────────────────────────────────────── */
+.architecture-preview {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.architecture-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.architecture-text {
+    animation: fadeInLeft 0.8s ease;
+}
+
+.arch-intro {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+}
+
+.arch-intro strong {
+    color: var(--accent-purple);
+    font-weight: 700;
+}
+
+.arch-structure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.structure-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.structure-item:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 10px 30px var(--accent-purple-glow);
+    transform: translateX(10px);
+}
+
+.structure-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.structure-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.structure-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-purple);
+}
+
+.structure-header h4 {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-purple);
+}
+
+.structure-item p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.architecture-diagram {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    animation: fadeInRight 0.8s ease;
+}
+
+.arch-visualization {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.arch-layer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.layer-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.arch-cli {
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-primary));
+    border: 2px solid var(--accent-purple);
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    text-align: center;
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+.arch-cli:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 50px var(--accent-purple-glow);
+}
+
+.node-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.node-icon-large {
+    font-family: 'Fira Code', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-purple);
+}
+
+.node-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.arch-connector {
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.connector-line {
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-purple), transparent);
+}
+
+.connector-pulse {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    animation: pulse-down 2s ease-in-out infinite;
+}
+
+.arch-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.arch-util {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    min-width: 100px;
+    transition: all 0.3s ease;
+}
+
+.arch-util:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px var(--accent-purple-glow);
+}
+
+.util-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.75rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.util-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-purple);
+}
+
+.util-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.arch-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.arch-module {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.arch-module:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+}
+
+.arch-module.active  { border-color: var(--accent-green); }
+.arch-module.planned { border-color: var(--border-color); opacity: 0.7; }
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.module-header .node-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.module-header .node-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-purple);
+}
+
+.module-header .node-label {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.module-status {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.module-status.active  { color: var(--accent-green); }
+.module-status.planned { color: var(--text-muted);   }
+
+.module-status.active .status-dot {
+    background: var(--accent-green);
+    animation: pulse-dot-green 2s ease-in-out infinite;
+}
+
+.module-subtools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.module-subtools span {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+}
+
+.arch-principles {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.principle-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.principle-badge:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-3px);
+}
+
+.principle-badge svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-purple);
+    flex-shrink: 0;
+}
+
+.principle-badge span {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* ── FEATURES ────────────────────────────────────────────────── */
+.features {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+.card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--accent-purple-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.feature-card:hover .card-glow {
+    opacity: 1;
+}
+
+.feature-card:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-primary));
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 20px var(--accent-purple-glow);
+    transform: rotate(5deg) scale(1.05);
+}
+
+.feature-icon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-purple);
+}
+
+.feature-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feature-list li {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.6;
+    transition: color 0.2s ease;
+}
+
+.feature-list li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-purple);
+    font-weight: bold;
+}
+
+.feature-card:hover .feature-list li {
+    color: var(--text-primary);
+}
+
+/* ── TERMINAL (AEGISCLI EXTENDED) ───────────────────────────── */
+.terminal-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.terminal-tab {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.terminal-tab:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-purple);
+}
+
+.terminal-tab.active {
+    background: var(--accent-purple);
+    color: var(--text-primary);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 15px var(--accent-purple-glow);
+}
+
+.terminal-body {
+    padding: 2rem;
+    min-height: 300px;
+}
+
+.terminal-content {
+    display: none;
+}
+
+.terminal-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.terminal-output {
+    margin-top: 1rem;
+}
+
+.output-line {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    animation: slideInOutput 0.3s ease forwards;
+    opacity: 0;
+}
+
+.output-line:nth-child(1) { animation-delay: 0.1s; }
+.output-line:nth-child(2) { animation-delay: 0.2s; }
+.output-line:nth-child(3) { animation-delay: 0.3s; }
+.output-line:nth-child(4) { animation-delay: 0.4s; }
+
+.output-icon          { font-size: 0.9rem; }
+.output-icon.success  { color: var(--accent-green);  }
+.output-icon.warning  { color: var(--accent-orange); }
+.output-text          { color: var(--text-secondary); }
+
+/* ── USAGE ───────────────────────────────────────────────────── */
+.usage {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.usage-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.subsection-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-purple);
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.output-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* ── GALLERY ITEMS ───────────────────────────────────────────── */
+.gallery-item {
+    position: relative;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    min-height: 200px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.gallery-item img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.04);
+}
+
+/* Hover expand overlay — only visible when image is loaded */
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(168, 85, 247, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: #fff;
+    z-index: 2;
+}
+
+.gallery-item:not(.img-missing):hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* Label pinned to bottom */
+.gallery-item .placeholder-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    z-index: 3;
+    transition: background 0.3s ease;
+}
+
+.gallery-item:hover .placeholder-label {
+    background: rgba(168, 85, 247, 0.25);
+}
+
+/* Missing image state — looks like original placeholder */
+.gallery-item.img-missing {
+    cursor: default;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.gallery-item.img-missing:hover {
+    border-color: var(--accent-purple);
+    border-style: solid;
+    background: var(--bg-tertiary);
+    box-shadow: 0 10px 30px var(--accent-purple-glow);
+    transform: scale(1.02);
+}
+
+.gallery-item.img-missing img {
+    display: none;
+}
+
+.gallery-item.img-missing .gallery-overlay {
+    display: none;
+}
+
+.gallery-item.img-missing .placeholder-label {
+    position: static;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+}
+
+/* Fallback icon (injected by JS when img-missing) */
+.gallery-item.img-missing::before {
+    content: '';
+    display: block;
+    width: 52px;
+    height: 52px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' stroke='%23666' stroke-width='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5' fill='%23666'/%3E%3Cpath d='M3 15l5-5 4 4 5-5 4 4v5H3v-3z' fill='%23666' opacity='0.3'/%3E%3C/svg%3E") center/contain no-repeat;
+    transition: all 0.3s ease;
+}
+
+.gallery-item.img-missing:hover::before {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' stroke='%23a855f7' stroke-width='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5' fill='%23a855f7'/%3E%3Cpath d='M3 15l5-5 4 4 5-5 4 4v5H3v-3z' fill='%23a855f7' opacity='0.3'/%3E%3C/svg%3E");
+    transform: scale(1.1);
+}
+
+/* Keep .placeholder-label standalone rule for other uses */
+.placeholder-label {
+    font-size: 0.8rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ── LIGHTBOX ────────────────────────────────────────────────── */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.lightbox-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lightbox-content {
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px var(--accent-purple-glow);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.lightbox-overlay.active .lightbox-content img {
+    transform: scale(1);
+}
+
+.lightbox-caption {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.lightbox-close {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    z-index: 10000;
+}
+
+.lightbox-close:hover {
+    background: var(--accent-purple);
+    border-color: var(--accent-purple);
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+.lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    z-index: 10000;
+}
+
+.lightbox-prev { left: 1.5rem; }
+.lightbox-next { right: 1.5rem; }
+
+.lightbox-nav:hover {
+    background: var(--accent-purple);
+    border-color: var(--accent-purple);
+    color: #fff;
+}
+
+/* ── ROADMAP ─────────────────────────────────────────────────── */
+.roadmap {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.roadmap-timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent-purple) 0%, var(--accent-blue) 50%, var(--accent-orange) 100%);
+}
+
+.roadmap-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 80px;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.roadmap-item:nth-child(2) { animation-delay: 0.1s; }
+.roadmap-item:nth-child(3) { animation-delay: 0.2s; }
+.roadmap-item:nth-child(4) { animation-delay: 0.3s; }
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.marker-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    opacity: 0;
+    animation: pulse-marker 2s ease-out infinite;
+}
+
+.marker-dot {
+    width: 20px;
+    height: 20px;
+    background: var(--accent-purple);
+    border: 3px solid var(--bg-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--accent-purple-glow);
+    z-index: 1;
+}
+
+.roadmap-item[data-phase="medium"] .marker-dot {
+    background: var(--accent-blue);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+.roadmap-item[data-phase="long"] .marker-dot {
+    background: var(--accent-orange);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+.roadmap-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.roadmap-item:hover .roadmap-content {
+    border-color: var(--accent-purple);
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+    transform: translateX(10px);
+}
+
+.roadmap-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.roadmap-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.roadmap-badge.short-term  { background: rgba(16,185,129,0.1);  color: var(--accent-green);  border: 1px solid var(--accent-green); }
+.roadmap-badge.medium-term { background: rgba(59,130,246,0.1);  color: var(--accent-blue);   border: 1px solid var(--accent-blue); }
+.roadmap-badge.long-term   { background: rgba(245,158,11,0.1);  color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+
+.roadmap-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.roadmap-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.roadmap-list li {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.roadmap-list li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-purple);
+    font-weight: bold;
+}
+
+.roadmap-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+    background-size: 200% 100%;
+    border-radius: 10px;
+    transition: width 1s ease;
+    animation: shimmer-bar 2s infinite;
+}
+
+.progress-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* ── PHILOSOPHY ──────────────────────────────────────────────── */
+.philosophy {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.philosophy-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.philosophy-intro {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 4rem;
+    line-height: 1.8;
+}
+
+.philosophy-intro strong {
+    color: var(--accent-purple);
+    font-weight: 700;
+}
+
+.principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.principle-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.principle-item:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px var(--accent-purple-glow);
+}
+
+.principle-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.principle-item:hover .principle-icon {
+    border-color: var(--accent-purple);
+    transform: rotate(5deg) scale(1.05);
+}
+
+.principle-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--accent-purple);
+}
+
+.principle-content h4 {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.principle-content p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.license-box {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.license-box:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 10px 40px var(--accent-purple-glow);
+}
+
+.license-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.license-header svg {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-purple);
+}
+
+.license-header h3 {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.license-box p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto 1.5rem;
+}
+
+.license-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.license-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* ── CTA ─────────────────────────────────────────────────────── */
+.cta {
+    position: relative;
+    padding: var(--section-padding);
+    z-index: 1;
+}
+
+.cta-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--accent-purple-glow) 0%, transparent 70%);
+    opacity: 0.3;
+    animation: rotateBg 20s linear infinite;
+}
+
+.cta-title {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
+}
+
+.cta-description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── KEYFRAMES AEGISCLI-SPECIFIC ────────────────────────────── */
+@keyframes floatBg {
+    0%, 100% { transform: translate(0, 0) scale(1);          }
+    50%       { transform: translate(50px, -50px) scale(1.1); }
+}
+
+@keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-purple-glow); }
+    50%       { box-shadow: 0 0 30px var(--accent-purple-glow), 0 0 50px var(--accent-purple-glow); }
+}
+
+@keyframes pulse-down {
+    0%   { top: 0;    opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes pulse-dot-green {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-green);       }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 6px transparent; }
+}
+
+@keyframes pulse-marker {
+    0%   { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes slideInOutput {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes shimmer-bar {
+    0%   { background-position: -100% 0; }
+    100% { background-position:  100% 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes rotateBg {
+    from { transform: rotate(0deg);   }
+    to   { transform: rotate(360deg); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE — AEGISCLI PAGE (aegiscli.css)
+   Breakpoints: 1280 | 1024 | 768 | 640 | 480 | 380
+   ════════════════════════════════════════════════════════════ */
+
+/* ── 1280px : Large desktop ───────────────────────────────── */
+@media (max-width: 1280px) {
+    .architecture-content {
+        gap: 3rem;
+    }
+
+    .usage-content {
+        gap: 3rem;
+    }
+
+    .cta-content {
+        padding: 3.5rem;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* ── 1024px : Tablet landscape ───────────────────────────── */
+@media (max-width: 1024px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    /* Stack main 2-column sections */
+    .usage-content,
+    .architecture-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    /* Gallery becomes single column */
+    .output-gallery {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Module grid stays 2-col */
+    .arch-modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cta-content {
+        padding: 3rem;
+    }
+
+    .philosophy-intro {
+        font-size: 1.1rem;
+    }
+}
+
+/* ── 768px : Tablet portrait ─────────────────────────────── */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-stats {
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    /* Features, principles, modules go single column */
+    .features-grid,
+    .principles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .arch-modules-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Architecture diagram adjustments */
+    .arch-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .arch-util {
+        min-width: 140px;
+    }
+
+    .arch-principles {
+        flex-direction: column;
+    }
+
+    .principle-badge {
+        justify-content: flex-start;
+    }
+
+    /* Roadmap */
+    .roadmap-item {
+        padding-left: 60px;
+    }
+
+    .roadmap-content {
+        padding: 2rem;
+    }
+
+    .roadmap-title {
+        font-size: 1.5rem;
+    }
+
+    /* CTA */
+    .cta-title {
+        font-size: 2.25rem;
+    }
+
+    .cta-content {
+        padding: 2.5rem 2rem;
+    }
+
+    .cta-description {
+        font-size: 1.05rem;
+    }
+
+    /* Terminal tabs: allow wrapping */
+    .terminal-tabs {
+        flex-wrap: wrap;
+    }
+
+    /* Gallery */
+    .gallery-item {
+        min-height: 160px;
+    }
+
+    /* Docs toast: full width on mobile */
+    .docs-toast {
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+        bottom: 1.5rem;
+    }
+
+    /* Structure items */
+    .structure-item:hover {
+        transform: translateX(4px);
+    }
+}
+
+/* ── 640px : Mobile ──────────────────────────────────────── */
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-stats {
+        gap: 1.25rem;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+    /* Architecture modules: full width */
+    .arch-modules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Gallery: 2 columns still ok */
+    .output-gallery {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .gallery-item {
+        min-height: 130px;
+    }
+
+    /* Feature cards: tighter padding */
+    .feature-card {
+        padding: 2rem;
+    }
+
+    .feature-title {
+        font-size: 1.4rem;
+    }
+
+    /* Roadmap */
+    .roadmap-item {
+        padding-left: 50px;
+    }
+
+    .timeline-line {
+        left: 20px;
+    }
+
+    .timeline-marker {
+        width: 44px;
+        height: 44px;
+    }
+
+    .marker-dot {
+        width: 16px;
+        height: 16px;
+    }
+
+    .roadmap-content {
+        padding: 1.5rem;
+    }
+
+    .roadmap-title {
+        font-size: 1.3rem;
+    }
+
+    .roadmap-header {
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    /* CTA */
+    .cta-title {
+        font-size: 1.9rem;
+    }
+
+    .cta-content {
+        padding: 2rem 1.5rem;
+        border-radius: 14px;
+    }
+
+    .cta-buttons {
+        gap: 1rem;
+    }
+
+    /* Terminal */
+    .terminal-tab {
+        font-size: 0.68rem;
+        padding: 0.35rem 0.8rem;
+    }
+
+    .terminal-body {
+        padding: 1.25rem;
+        min-height: 240px;
+    }
+
+    /* Architecture diagram */
+    .architecture-diagram {
+        padding: 1.5rem;
+        border-radius: 14px;
+    }
+
+    .arch-cli {
+        padding: 1rem 1.5rem;
+    }
+
+    .arch-util {
+        min-width: 100px;
+        padding: 1.25rem 0.75rem;
+    }
+
+    /* License box */
+    .license-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .docs-toast {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 1rem;
+        padding: 0.85rem 1rem;
+    }
+}
+
+/* ── 480px : Small phones ────────────────────────────────── */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.6rem;
+    }
+
+    /* Gallery: single column on very small screens */
+    .output-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-item {
+        min-height: 180px;
+    }
+
+    /* Feature list items */
+    .feature-list li {
+        font-size: 0.9rem;
+    }
+
+    /* Principle items: tighter */
+    .principle-item {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .principle-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Terminal */
+    .terminal-tabs {
+        gap: 0.35rem;
+    }
+
+    .terminal-tab {
+        font-size: 0.62rem;
+        padding: 0.3rem 0.65rem;
+    }
+
+    /* Roadmap items */
+    .roadmap-item {
+        padding-left: 44px;
+        margin-bottom: 2rem;
+    }
+
+    .roadmap-list li {
+        font-size: 0.9rem;
+    }
+
+    /* CTA */
+    .cta-title {
+        font-size: 1.7rem;
+        letter-spacing: -0.5px;
+    }
+
+    .cta-description {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Docs toast */
+    .docs-toast-text strong {
+        font-size: 0.85rem;
+    }
+
+    .docs-toast-text span {
+        font-size: 0.75rem;
+    }
+}
+
+/* ── 380px : Tiny phones ─────────────────────────────────── */
+@media (max-width: 380px) {
+    .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .hero-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .cta-title {
+        font-size: 1.5rem;
+    }
+
+    .cta-content {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.2rem;
+    }
+
+    .roadmap-content {
+        padding: 1.25rem;
+    }
+
+    .roadmap-title {
+        font-size: 1.15rem;
+    }
+
+    .arch-row {
+        gap: 0.75rem;
+    }
+
+    .arch-util {
+        padding: 1rem 0.65rem;
+    }
+
+    .docs-toast {
+        left: 0.5rem;
+        right: 0.5rem;
+    }
+}
+
+/* ── DOCS TOAST ──────────────────────────────────────────────── */
+.docs-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-purple);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 30px var(--accent-purple-glow);
+    z-index: 9998;
+    max-width: 360px;
+    transform: translateY(120%);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.docs-toast.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.docs-toast-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--accent-purple);
+}
+
+.docs-toast-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.docs-toast-text strong {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.docs-toast-text span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-family: 'Fira Code', monospace;
+}
+
+.docs-toast-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.25rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.docs-toast-close:hover {
+    color: var(--text-primary);
+}

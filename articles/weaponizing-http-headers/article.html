@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Weaponizing HTTP Headers - <!--Part 1:--> Reconnaissance phase | Aegis Martin</title>
+
+    <meta name="description" content="A practical offensive theory breakdown of custom HTTP headers and the Vary header — how to spot them, fingerprint tech stacks, and follow the blood-trail to real vulnerabilities.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js — syntax highlighting. Do NOT remove. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/article-page.css">
+</head>
+<body>
+
+    <!-- Lightbox overlay — do NOT remove, required for image zoom -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">&#x2715;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ════════════════════════════════════════════════════════
+         NAVBAR — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../../assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>        
+            <ul class="nav-links">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../articles.html" class="active">Articles</a></li>
+                <li><a href="../../aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE HERO — metadata header
+    ════════════════════════════════════════════════════════════ -->
+    <header class="article-hero">
+        <div class="hero-inner">
+
+            <div class="article-meta-row">
+                <span class="series-badge exploring">EXPLORING CYBERSECURITY</span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Jan 6, 2026
+                </span>
+
+                <span class="meta-divider"></span>
+
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    5 min read
+                </span>
+            </div>
+
+            <h1 class="article-title">Weaponizing HTTP Headers - <!--Part 1:--> Reconnaissance phase</h1>
+
+            <p class="article-excerpt">
+                HTTP headers control how browsers and servers interact with data — vulnerabilities in them can affect the entire application. This article covers how to spot custom headers, fingerprint tech stacks, and leverage the Vary header as an offensive recon signal.
+            </p>
+
+            <div class="article-tags-row">
+                <span class="art-tag">#web-security</span>
+                <span class="art-tag">#offensive-security</span>
+                <span class="art-tag">#http</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE BODY — TOC sidebar + content column
+    ════════════════════════════════════════════════════════════ -->
+    <div class="article-layout">
+
+        <!-- TABLE OF CONTENTS — auto-generated by JS, do NOT edit -->
+        <aside class="toc-sidebar" id="tocSidebar">
+            <div class="toc-header">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Contents
+            </div>
+            <ul class="toc-list" id="tocList">
+                <!-- populated automatically from h2/h3 headings -->
+            </ul>
+        </aside>
+
+        <article class="article-content" id="articleContent">
+
+            <!-- Cover image -->
+            <div class="article-cover-inline">
+                <img src="images/main.png" alt="HTTP Security Headers - Offensive Theory Part 1 cover">
+            </div>
+
+            <p>
+                HTTP headers control how browsers and servers interact with data so vulnerabilities in them may affect the whole application. Headers can reveal running services, software versions, and programming languages employed by the application. Such details help in tailoring payloads and selecting appropriate attack methods for further testing or direct HTTP header exploitation.
+            </p>
+
+            <p>
+                Real-world examples are used to illustrate how header analysis contributes to vulnerability discovery.
+            </p>
+
+            <p>
+                Custom headers are the headers made exclusively for that specific application by their developer team. Usually their names start with <code>X-</code> but now it is more common to see regular names — we can still verify if a header is custom or standard.
+            </p>
+
+            <h2 id="why-pay-attention">Why Pay Attention?</h2>
+
+            <p>There are multiple reasons why custom headers can be an interesting finding for VAPT. They are not standardized headers defined by RFC, so they lack strict specifications which the VAPT team should be paying attention to.</p>
+
+            <ul>
+                <li><strong>Tech stack fingerprinting</strong>: frameworks, proxies, auth layers. Faster attack planning.</li>
+                <li><strong>Auth logic insight</strong>: headers tied to roles, tokens, internal trust paths.</li>
+                <li><strong>Session handling clues</strong>: custom session IDs, user mapping, tracking logic.</li>
+                <li><strong>Environment leaks</strong>: staging, dev, internal hostnames. Those are softer targets.</li>
+                <li><strong>Attack chaining fuel</strong>: combine header behavior with IDOR, CORS, cache poisoning, auth bypass.</li>
+                <li><strong>OSINT wins</strong>: find backend code, configs, or comments explaining exactly how the app thinks.</li>
+            </ul>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important</strong>
+                    A header becomes security-relevant only when backend logic changes behavior based on its presence or value. Custom header spotting is not for finding the vulnerability itself — it's a blood-trail that will potentially lead us to the security hole.
+                </div>
+            </div>
+
+            <h2 id="how-to-spot-them">How to Spot Them?</h2>
+
+            <p>While headers with <code>X-</code> at the beginning are obvious, others might be much harder. There are still tricks to do it — when we check headers of the site we must pay attention to these potential clues.</p>
+
+            <ul>
+                <li><strong>Baseline first</strong>: know common headers. Anything outside that set demands attention.</li>
+                <li><strong>Diff responses</strong>: normal 200 vs 400/403/500. New headers popping up = custom.</li>
+                <li><strong>Trigger parser errors</strong>: malformed paths, bad encoding, weird methods. Sloppy responses talk more.</li>
+                <li><strong>Proxy tools</strong>: Burp, ZAP. Sort headers alphabetically. The odd names jump out.</li>
+                <li><strong>Repetition test</strong>: hit another site. If the header only exists here, it's custom.</li>
+                <li><strong>Name smell test</strong>: words like <code>internal</code>, <code>debug</code>, <code>env</code>, <code>user</code>, <code>role</code>, <code>session</code> almost certainly are app-specific headers.</li>
+            </ul>
+
+            <p>
+                After we identify a suspicious header name we must do a quick search to find information about it. The easiest way is to use <strong>Google Dorking</strong>. Let's look at the example below.
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTTP</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-http">HTTP/2 400 Bad Request
+Server: Apache
+X-Content-Type-Options: nosniff
+Accept-Ranges: bytes
+Vary: Accept-Encoding
+X-REDACTED_Session: &lt;redacted-value&gt;</code></pre>
+            </div>
+
+            <p>
+                For instance, source code in GitHub repos sometimes includes elements that interact with custom headers. So if you identified the header <code>X-Internal-Token: secret-value</code>, you could use Google to search (dork) <code>"X-Internal-Token" site:github.com</code>, which might reveal hardcoded references in backend code, sample configs or <code>.env</code> files, or middleware and route handlers checking for the header.
+            </p>
+
+            <p>Now we will get more technical.</p>
+
+            <h3 id="example-ipapi">Example: ipapi.co</h3>
+
+            <ol>
+                <li>
+                    <p>First let's curl to get the response from the server:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -v https://ipapi.co/json</code></pre>
+                    </div>
+
+                    <figure class="article-image">
+                        <img src="images/1.png" alt="curl -v response from ipapi.co showing response headers">
+                        <figcaption>curl verbose output — response headers are prefixed with <code>&lt;</code></figcaption>
+                    </figure>
+
+                    <p>We are receiving a response from this request. We are interested in the headers, which start with <code>&lt;</code> in verbose mode. In this case our headers are:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">HTTP</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-http">&lt; HTTP/2 200
+&lt; date: Sun, 28 Dec 2025 12:26:01 GMT
+&lt; content-type: application/json
+&lt; content-length: 724
+&lt; nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+&lt; server: cloudflare
+&lt; allow: POST, OPTIONS, GET, OPTIONS, HEAD
+&lt; x-frame-options: DENY
+&lt; vary: Host, origin
+&lt; x-content-type-options: nosniff
+&lt; referrer-policy: same-origin
+&lt; cross-origin-opener-policy: same-origin
+&lt; content-security-policy-report-only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.stripe.com https://*.paddle.com https://www.google.com https://www.gstatic.com https://maps.gstatic.com https://maps.googleapis.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline' https://*.paddle.com https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: https://ipapi.co https://maps.gstatic.com https://maps.googleapis.com https://*.stripe.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; frame-src 'self' https://www.google.com https://*.stripe.com https://*.paddle.com https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; connect-src 'self' https://ipapi.co/ https://*.paddle.com https://*.stripe.com https://maps.googleapis.com https://www.google.com/recaptcha/; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
+&lt; cf-cache-status: DYNAMIC
+&lt; report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=sQ4siVO1FBc%2BTiiiF0PbdpmCfyGC9qZysZyNKy3Nybcu2b5X8q9RqDleMmDLVEu2WK5lMVEgAGgekWTbBll5LCUu7cgo"}]}
+&lt; cf-ray: 9b510b2e3fc2dfb0-EVN</code></pre>
+                    </div>
+
+                    <p>
+                        As we can see, besides <code>X-</code>-prefixed headers we also have <code>cf-ray</code> — which is technically a custom header since it's not standardized by RFC, however in VAPT it's still not application-defined because it's used across all infrastructures running Cloudflare.
+                    </p>
+
+                    <p>In case we don't want to see other data and see headers only, we should use <code>-I</code> instead of <code>-v</code>:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -I https://ipapi.co/json</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p>Now let's see what we can find about this header using Google Dorking.</p>
+                    <p>If we search <strong>"cf-ray"</strong> we will find out that this is a Cloudflare HTTP header, otherwise known as Ray ID — a hashed value that encodes information about the data center and the visitor's request.</p>
+                </li>
+            </ol>
+
+            <h3 id="example-pokeapi">Example: pokeapi.co</h3>
+
+            <p>Being standardized by RFC doesn't mean it's pointless for VAPT, even if the header is technically <em>harmless</em>.</p>
+
+            <ol>
+                <li>
+                    <p>Run:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -I https://pokeapi.co/api/v2/pokemon/pikachu</code></pre>
+                    </div>
+
+                    <p>We will see our headers:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">HTTP</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-http">HTTP/2 200
+date: Sun, 28 Dec 2025 12:55:10 GMT
+content-type: application/json; charset=utf-8
+access-control-allow-origin: *
+cache-control: public, max-age=86400, s-maxage=86400
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+etag: W/"3fa24-wbt3/8cXlN2gHJ6CC6+3DtEKJMc"
+server: cloudflare
+strict-transport-security: max-age=31556926
+traceparent: 00-56faeedd9ecb60dfdb9e51b1388e11f1-e62c36a9e5de6889-00
+x-cloud-trace-context: 56faeedd9ecb60dfdb9e51b1388e11f1/16585691631032625289
+x-country-code: DK
+x-orig-accept-language: fr-CH,fr-FR;q=0.9,fr;q=0.8,en-US;q=0.7,en;q=0.6
+x-powered-by: Express
+x-served-by: cache-bma-essb1270021-BMA
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1765974536.323588,VS0,VE1
+vary: Accept-Encoding,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443"; ma=86400
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=molvjxUnL%2FCIqKdhT9VYD5TeJlSmNtTBH2qW64VNUAijalKvMXuIrG7oIbq1faT%2BZEDgpTcmriHgsbsc460F8YmdmScyBaZd"}]}
+age: 1420
+cf-cache-status: HIT
+cf-ray: 9b5135e07e62e540-EVN</code></pre>
+                    </div>
+
+                    <p>Here let's focus on the <code>traceparent</code> header.</p>
+                </li>
+
+                <li>
+                    <p><code>traceparent</code> is a distributed tracing header. Harmless by itself, but if the dev was sloppy it can leak:</p>
+                    <ol>
+                        <li>internal service structure</li>
+                        <li>correlation IDs tied to logs</li>
+                        <li>sometimes other trace headers get echoed back or logged publicly</li>
+                    </ol>
+                    <p>It's not a vulnerability, more like a <strong>fingerprint / recon helper</strong>. Depending on the specific case this can be a serious flag.</p>
+                </li>
+            </ol>
+
+            <h3 id="example-openai">Example: OpenAI API</h3>
+
+            <p>Now we will try a harder example.</p>
+
+            <ol>
+                <li>
+                    <p>First let's curl our target to check its response:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -I -H "Authorization: Bearer fk-fakekey123" https://api.openai.com/v1/models</code></pre>
+                    </div>
+
+                    <p>Here we can find our headers:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">HTTP</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-http">HTTP/2 401
+date: Sun, 28 Dec 2025 13:14:16 GMT
+content-type: application/json
+content-length: 242
+www-authenticate: Bearer realm="OpenAI API"
+openai-version: 2020-10-01
+x-request-id: req_5a0f57ef8f4b4d9aa9c14502d0624925
+openai-processing-ms: 4
+x-envoy-upstream-service-time: 6
+x-openai-proxy-wasm: v0.1
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=p4ywGRx4xaMlaxuz4UXqaKnbm8ZY8yCmW0OqqjgvuhU-1766927656-1.0.1.1-wAy4aXPRqSQltBMGwu2W4V0sASGrOCJq84YhCvjYpMFj93RTOamHjCpveseEt06O0BuzSaN4E5U5bLpq8vhKGCiDoZBVBBw7ld0U1pyy_j4; path=/; expires=Sun, 28-Dec-25 13:44:16 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+set-cookie: _cfuvid=xes5NHC5Vd__5iekCtUB9jbdZE0ElhGSdrfIJ9arLOg-1766927656089-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+server: cloudflare
+cf-ray: 9b5151ce5905dfb0-EVN
+alt-svc: h3=":443"; ma=86400</code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <p>We need to identify custom headers. Some have app-specific names for OpenAI, some outright start with <code>X-</code>. Our custom headers are:</p>
+                    <ol>
+                        <li><code>openai-version: 2020-10-01</code></li>
+                        <li><code>x-request-id: req_5a0f57ef8f4b4d9aa9c14502d0624925</code></li>
+                        <li><code>openai-processing-ms: 4</code></li>
+                        <li><code>x-envoy-upstream-service-time: 6</code></li>
+                        <li><code>x-openai-proxy-wasm: v0.1</code></li>
+                    </ol>
+                </li>
+
+                <li>
+                    <p>Finally we will perform a search to find data on these headers. Using Google Dorking we search our newly found headers.</p>
+
+                    <ol>
+                        <li>
+                            <p><strong>openai-version: 2020-10-01</strong></p>
+                            <p>By searching:</p>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">BASH</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-bash">"openai-version: 2020-10-01" site:github.com -inurl:issues</code></pre>
+                            </div>
+                            <p>We identify that this is the version of the API we were sending the request to. So now we know which version to target when looking for vulnerabilities.</p>
+                        </li>
+
+                        <li>
+                            <p><strong>x-request-id</strong></p>
+                            <p>By searching:</p>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">BASH</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-bash">"x-request-id" site:github.com "openai"</code></pre>
+                            </div>
+                            <p>We can find how that header is used and how it's interacting with our application of interest. Here we managed to find the <code>openai-python</code> repository where we can see how the header is implemented — all object responses in the SDK expose a <code>_request_id</code> property sourced from this header, so you can quickly log failing requests and report them back to OpenAI.</p>
+                            <p>We can even find a specific code snippet by searching:</p>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">BASH</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-bash">"x-request-id" site:github.com inurl:openai-python filetype:py</code></pre>
+                            </div>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">PYTHON</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-python">log.debug("request_id: %s", response.headers.get("x-request-id"))</code></pre>
+                            </div>
+                        </li>
+
+                        <li>
+                            <p><strong>openai-processing-ms</strong></p>
+                            <p>By searching:</p>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">BASH</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-bash">site:github.com "openai-processing-ms"</code></pre>
+                            </div>
+                            <p>This represents server-side processing time in milliseconds. In our case it's 4ms because it was a quick auth rejection — real AI queries spike much higher.</p>
+                            <p>To hunt for recent bugs, try:</p>
+                            <div class="code-block-wrapper">
+                                <div class="code-block-header">
+                                    <div class="code-dots"><span></span><span></span><span></span></div>
+                                    <span class="code-lang">BASH</span>
+                                    <button class="code-copy-btn" data-copy>Copy</button>
+                                </div>
+                                <pre><code class="language-bash">site:github.com "openai-processing-ms" inurl:issues "2025" "dec"</code></pre>
+                            </div>
+                            <p>This can surface recent reported bugs that may still be exploitable.</p>
+                        </li>
+                    </ol>
+
+                    <p>And so on — you can try this now with the remaining two custom headers. No vulnerabilities are claimed for this specific target, but in different cases close to this example they absolutely can be found.</p>
+                </li>
+            </ol>
+
+            <p>Now we see repos where those headers are used and can read the code, comments, questions, and issues around them. This will help us understand what they do and get us on the blood-trail.</p>
+
+            <div class="callout tip">
+                <span class="callout-icon">💡</span>
+                <div class="callout-body">
+                    <strong>Tip</strong>
+                    Pay great attention to non-200 responses, especially 400 Bad Request. Custom headers usually appear when we make the server <em>uncomfortable</em>.
+                </div>
+            </div>
+
+            <p>
+                Now using the knowledge we have about HTTP headers we will cover other topics related to this subject. This section covers techniques for exploiting weaknesses in HTTP headers, ranging from custom header abuse to cache poisoning and proxy misconfigurations.
+            </p>
+
+            <h2 id="vary-http-header">Vary HTTP Header</h2>
+
+            <p>
+                The <code>Vary</code> HTTP response header tells caches which request headers must be considered when deciding whether a cached response can be reused. Without <code>Vary</code>, a cache will assume <em>same URL = same response</em>. That assumption is often wrong. <code>Vary</code> corrects it by saying: <em>same URL + same listed header values = same response</em>.
+            </p>
+
+            <p>
+                How does it do that? Caches normally key on <code>[HTTP method] + [URL]</code>. But when <code>Vary</code> exists, the cache key becomes:
+            </p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">TEXT</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code>[HTTP method] + [URL] + [values of headers listed in Vary]</code></pre>
+            </div>
+
+            <p>For example:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">HTTP</span>
+                    <button class="code-copy-btn" data-copy>Copy</button>
+                </div>
+                <pre><code class="language-http">Vary: X-Forwarded-Host, Origin</code></pre>
+            </div>
+
+            <p>This means the cache will be reused if: <code>Cache key = / + value of X-Forwarded-Host + value of Origin</code></p>
+
+            <figure class="article-image">
+                <img src="images/2.png" alt="Diagram illustrating how the Vary header affects cache key construction">
+                <figcaption>How Vary extends the cache key beyond just the URL</figcaption>
+            </figure>
+
+            <div class="callout important">
+                <span class="callout-icon">❗</span>
+                <div class="callout-body">
+                    <strong>Important — What Vary Does NOT Do</strong>
+                    <ul>
+                        <li>It <strong>does not validate</strong> headers</li>
+                        <li>It <strong>does not block</strong> headers</li>
+                        <li>It <strong>does not make things safe by itself</strong></li>
+                        <li>It <strong>does not prevent the server from trusting bad input</strong></li>
+                    </ul>
+                    It only talks to caches.
+                </div>
+            </div>
+
+            <h2 id="red-team-perspective">Red Team Perspective</h2>
+
+            <p>
+                If a header appears in the <code>Vary</code> response header, it means the application uses that header when generating the response. That directly implies the server backend is reading that header and it is part of the application logic — which is a signal for the Red Team to keep an eye on it.
+            </p>
+
+            <h3 id="vary-example">Example: X-Forwarded-Host Reflection</h3>
+
+            <ol>
+                <li>
+                    <p>First we look at the server's response:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">HTTP</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-http">HTTP/1.1 200 OK
+Server: Apache/2.4.37
+Vary: X-Forwarded-Host,Origin
+Content-type: text/html; charset=utf-8
+Connection: close
+Content-Length: 11512</code></pre>
+                    </div>
+
+                    <p>
+                        The response contains the <code>Vary</code> header listing <code>X-Forwarded-Host</code> and <code>Origin</code>. We will now leverage this to test if the web application trusts user input from those headers.
+                    </p>
+                </li>
+
+                <li>
+                    <p>We will send:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">BASH</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-bash">curl -i https://example.com/ -H "X-Forwarded-Host: testing.com"</code></pre>
+                    </div>
+
+                    <p>We receive this response from the server:</p>
+
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <div class="code-dots"><span></span><span></span><span></span></div>
+                            <span class="code-lang">HTTP</span>
+                            <button class="code-copy-btn" data-copy>Copy</button>
+                        </div>
+                        <pre><code class="language-http">HTTP/1.1 200 OK
+
+Server: Apache/2.4.37
+Vary: X-Forwarded-Host,Origin
+Content-type: text/html; charset=utf-8
+Connection: close
+Content-Length: 11509
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;script src="https://testing/assets/js/vendor/jquery-ui.custom.min.js"&gt;&lt;/script&gt;
+...
+&lt;/html&gt;</code></pre>
+                    </div>
+
+                    <p>
+                        Sure enough, the response confirmed that the <code>X-Forwarded-Host</code> header is being reflected in the HTML and is likely being trusted by the application.
+                    </p>
+
+                    <p>
+                        This discovery paves the way to using <code>X-Forwarded-Host</code> to check for unexpected behaviors. Techniques such as spoofing, server-side request forgery (SSRF), and browser-powered desync attacks can potentially lead to <strong>cache poisoning</strong>. It might be possible to poison the cache if some responses use <code>X-Forwarded-Host</code> without including it in <code>Vary</code>. Cache Poisoning will be discussed in the next chapter of Security Headers.
+                    </p>
+                </li>
+            </ol>
+
+            <hr>
+
+            <div class="callout warning">
+                <span class="callout-icon">⚠</span>
+                <div class="callout-body">
+                    <strong>Warning</strong>
+                    Only test against systems you own or have explicit written permission to test.
+                </div>
+            </div>
+
+        </article>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         ARTICLE FOOTER — back link + share buttons
+    ════════════════════════════════════════════════════════════ -->
+    <section class="article-footer-section">
+        <div class="article-footer-divider"></div>
+        <div class="article-footer-meta">
+
+            <a href="../../articles.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Articles
+            </a>
+
+            <div class="article-share">
+                <span class="share-label">Share</span>
+                <a href="https://twitter.com/intent/tweet?text=Guide for Weaponizing HTTP headers! Reconnaissance phase&url=https://aegismartin.com/articles/weaponizing-http-headers/article.html" target="_blank" rel="noopener" class="share-btn" title="Share on X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://aegismartin.com/articles/weaponizing-http-headers/article.html" target="_blank" rel="noopener" class="share-btn" title="Share on LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════
+         FOOTER — do NOT modify
+    ════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js — do NOT remove -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script data-cfasync="false" src="../../assets/js/particles.js"></script>
+    <script data-cfasync="false" src="../../assets/js/article-page.js"></script>
+    <script data-cfasync="false" src="../../assets/js/nav.js"></script>   
+
+</body>
+</html>

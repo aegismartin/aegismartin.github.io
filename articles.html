@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical articles on penetration testing, web security, and cybersecurity tooling by Aegis Martin. Practical methodology, vulnerability research, and security writeups.">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="favicon.ico">   
+    <title>Articles &ndash; Security Research &amp; Writeups | Aegis Martin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/articles.css">
+    <style>
+        @media (max-width: 900px) {
+            .banner-content { flex-direction: column !important; }
+            .banner-content > div:last-child { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/img/logo.png" alt="Aegis Martin Logo">
+                <span class="logo-text">AEGIS MARTIN</span>
+            </div>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html" class="active">Articles</a></li>
+                <li><a href="aegiscli.html">AegisCLI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="banner-bg"></div>
+        <div class="banner-content" style="display:flex; align-items:center; justify-content:space-between; gap:5rem;">
+            <div class="banner-inner" style="flex:1;">
+                <div class="banner-label">
+                    <span class="label-dot"></span>
+                    TECHNICAL WRITEUPS &amp; RESEARCH
+                </div>
+                <h1 class="banner-title">
+                    <span class="banner-title-line">Deep dives into</span>
+                    <span class="banner-title-line title-emphasis">penetration testing,</span>
+                    <span class="banner-title-line">vulnerability research,</span>
+                    <span class="banner-title-line title-emphasis">and security tooling</span>
+                </h1>
+                <div class="banner-stats-row">
+                    <div class="stat-box">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Articles</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-box">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Series</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-box">
+                        <div class="stat-value">~15min</div>
+                        <div class="stat-label">Avg Read</div>
+
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1; position:relative; animation: fadeInRight 0.8s ease 0.4s backwards;">
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:120%; height:120%; background:radial-gradient(circle, rgba(168,85,247,0.3), transparent 70%); filter:blur(40px); z-index:0; pointer-events:none;"></div>
+                <img src="assets/img/me.png" alt="Aegis Martin" style="width:100%; height:auto; display:block; border-radius:20px; position:relative; z-index:1;">
+            </div>
+        </div>
+    
+        <div class="scroll-indicator">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+    </section>
+
+    <!-- Filter Toolbar -->
+    <section class="filter-toolbar">
+        <div class="toolbar-container">
+
+            <!-- Series custom dropdown -->
+            <div class="toolbar-left">
+                <div class="csel" id="seriesSelect">
+                    <button class="csel-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="csel-dot all"></span>
+                        <span class="csel-label">All Series</span>
+                        <svg class="csel-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <ul class="csel-panel" role="listbox">
+                        <li class="csel-option active" data-value="all"         data-label="All Series"        data-dot="all"         role="option"><span class="csel-opt-dot all"></span>All</li>
+                        <li class="csel-option"         data-value="methodology" data-label="Methodology"       data-dot="methodology" role="option"><span class="csel-opt-dot methodology"></span>Methodology</li>
+                        <li class="csel-option"         data-value="exploring"   data-label="Exploring"         data-dot="exploring"   role="option"><span class="csel-opt-dot exploring"></span>Exploring Cybersecurity</li>
+                        <li class="csel-option"         data-value="developer"   data-label="Life of a Dev"     data-dot="developer"   role="option"><span class="csel-opt-dot developer"></span>Life of a Developer</li>
+                        <li class="csel-option"         data-value="owasp"       data-label="OWASP"             data-dot="owasp"       role="option"><span class="csel-opt-dot owasp"></span>OWASP</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tag dropdown + sort -->
+            <div class="toolbar-right">
+                <div class="csel" id="tagSelect">
+                    <button class="csel-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="csel-dot all"></span>
+                        <span class="csel-label">All Tags</span>
+                        <svg class="csel-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <ul class="csel-panel csel-panel--right" role="listbox">
+                        <li class="csel-option active" data-value="all"               data-label="All Tags"         data-dot="all"  role="option"><span class="csel-opt-dot all"></span>All Tags</li>
+                        <li class="csel-option"         data-value="cybersecurity"     data-label="Cybersecurity"    data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Cybersecurity</li>
+                        <li class="csel-option"         data-value="web-security"      data-label="Web Security"     data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Web Security</li>
+                        <li class="csel-option"         data-value="pentesting"        data-label="Pentesting"       data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Pentesting</li>
+                        <li class="csel-option"         data-value="offensive-security" data-label="Offensive Sec"   data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Offensive Security</li>
+                        <li class="csel-option"         data-value="osint"             data-label="OSINT"            data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>OSINT</li>
+                        <li class="csel-option"         data-value="networking"        data-label="Networking"       data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Networking</li>
+                        <li class="csel-option"         data-value="labs"              data-label="Labs"             data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Labs</li>
+                        <li class="csel-option"         data-value="linux"             data-label="Linux"            data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Linux</li>
+                        <li class="csel-option"         data-value="bash"              data-label="Bash"             data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Bash</li>
+                        <li class="csel-option"         data-value="python"            data-label="Python"           data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Python</li>
+                        <li class="csel-option"         data-value="curl"              data-label="cURL"             data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>cURL</li>
+                        <li class="csel-option"         data-value="burp-suite"        data-label="Burp Suite"       data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>Burp Suite</li>
+                        <li class="csel-option"         data-value="http"              data-label="HTTP"             data-dot="tag"  role="option"><span class="csel-opt-dot tag"></span>HTTP</li>
+                    </ul>
+                </div>
+                <button class="sort-toggle" id="sortToggle" title="Sort order">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h13M3 12h9M3 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 8l3 3 3-3M20 11V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span class="sort-label">Newest</span>
+                </button>
+            </div>
+
+        </div>
+        <div class="results-bar">
+            <span id="resultsCount">8</span> articles
+        </div>
+    </section>
+
+    <!-- Articles Grid -->
+    <section class="articles-main">
+        <div class="articles-container">
+            <div class="articles-grid" id="articlesGrid">
+
+
+                <article class="art-card" data-series="methodology" data-tags="linux,bash,cybersecurity" data-date="2026-01-26">
+                    <a href="articles/bash-methodology-1/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/bash-methodology-1/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag methodology">Methodology</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">The Bash Scripting Guide Every Cybersecurity Beginner Needs</h3>
+                            <p class="art-excerpt">A practical introduction to Bash scripting for cybersecurity beginners. Learn core Linux command-line skills, automation basics, and how scripting strengthens offensive and defensive workflows.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#linux</span><span>#bash</span><span>#cybersecurity</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 26, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>12 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+
+                <article class="art-card" data-series="exploring" data-tags="pentesting,labs,web-security" data-date="2026-01-23">
+                    <a href="articles/juice-shop-1/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/juice-shop-1/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag exploring">Exploring Cybersecurity</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">OWASP Juice Shop: Complete 1-Star Challenge Walkthrough</h3>
+                            <p class="art-excerpt">A complete walkthrough of OWASP Juice Shop 1-star challenges. Learn practical exploitation techniques, understand common web vulnerabilities, and apply structured pentesting methodology in a real lab environment.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#pentesting</span><span>#labs</span><span>#web-security</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 23, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>5 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+
+
+
+
+                <article class="art-card" data-series="methodology" data-tags="pentesting,burp-suite,web-security" data-date="2026-01-22">
+                    <a href="articles/burp-suite-methodology-1/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/burp-suite-methodology-1/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag methodology">Methodology</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">Swiss Knife of the Pen-Tester, Practical Burp Suite Methodology — Part 1</h3>
+                            <p class="art-excerpt">A practical breakdown of using Burp Suite for structured web application testing. Learn how to intercept, analyze, and manipulate HTTP traffic as part of a professional pentesting workflow.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#pentesting</span><span>#burp-suite</span><span>#web-security</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 22, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>10 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+
+                <article class="art-card" data-series="methodology" data-tags="pentesting,curl,http" data-date="2026-01-13">
+                    <a href="articles/curl-methodology-1/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/curl-methodology-1/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag methodology">Methodology</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">A Practical cURL Methodology for Security Testing — Part 1: Observation</h3>
+                            <p class="art-excerpt">A structured, hands-on guide to using cURL for security testing. Learn how to observe HTTP responses, inspect headers, and extract reconnaissance intelligence directly from the command line.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#pentesting</span><span>#curl</span><span>#http</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 13, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>11 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="art-card" data-series="exploring" data-tags="web-security,offensive-security,http" data-date="2026-01-10">
+                    <a href="articles/cache-poisoning-via-http-headers/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/cache-poisoning-via-http-headers/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag exploring">Exploring Cybersecurity</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">Cache Poisoning: The Silent Web Attack You Need to Know About</h3>
+                            <p class="art-excerpt">An in-depth look at web cache poisoning attacks — how they work, why misconfigurations happen, and how attackers exploit HTTP behavior to manipulate cached responses.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#web-security</span><span>#offensive-security</span><span>#http</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 10, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>6 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+
+                <article class="art-card" data-series="exploring" data-tags="web-security,offensive-security,http" data-date="2025-01-06">
+                    <a href="articles/weaponizing-http-headers/article.html" class="art-link">
+                        <div class="art-visual">
+                            <img src="articles/weaponizing-http-headers/images/main.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="art-placeholder"><div class="placeholder-icon"></div></div>
+                            <div class="art-overlay"></div>
+                            <div class="series-tag exploring">Exploring Cybersecurity</div>
+                        </div>
+                        <div class="art-body">
+                            <h3 class="art-title">Weaponizing HTTP Headers: The Reconnaissance Phase</h3>
+                            <p class="art-excerpt">A practical deep dive into weaponizing HTTP headers for reconnaissance. Learn how to extract server intelligence, identify misconfigurations, and leverage header analysis for effective web penetration testing.</p>
+                            <div class="art-footer">
+                                <div class="art-tags">
+                                    <span>#web-security</span><span>#offensive-security</span><span>#http</span>
+                                </div>
+                                <div class="art-meta">
+                                    <span>Jan 6, 2026</span>
+                                    <span>&middot;</span>
+                                    <span>5 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+            </div>
+
+            <div class="no-results" id="noResults">
+                <div class="no-results-icon">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <p class="no-results-text">No articles match your filters</p>
+                <button class="reset-btn" onclick="window.location.reload()">Reset all filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Aegis Martin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://medium.com/@aegis-martin" target="_blank">Medium</a>
+                <a href="https://github.com/martinsimonyan43" target="_blank">GitHub</a>
+                <a href="https://www.instagram.com/bmp_43/" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="assets/js/particles.js"></script>
+    <script data-cfasync="false" src="assets/js/articles.js"></script>
+    <script data-cfasync="false" src="assets/js/nav.js"></script>
+</body>
+</html>

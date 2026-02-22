@@ -1,0 +1,138 @@
+<svg width="1300" height="780" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+    <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#60a5fa"/>
+    </marker>
+    <marker id="arrowLeft" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4ade80"/>
+    </marker>
+    <marker id="arrowRightY" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrowLeftY" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrowRightG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrowLeftG" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f87171"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1300" height="780" fill="#0a0a0a"/>
+  <rect width="1300" height="780" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <line x1="80" y1="55" x2="1220" y2="55" stroke="#333" stroke-width="1"/>
+  <text x="650" y="38" fill="#e5e5e5" font-size="22" font-weight="bold" text-anchor="middle" letter-spacing="6">DVWA AUTHENTICATION — CURL SEQUENCE</text>
+  <line x1="80" y1="65" x2="1220" y2="65" stroke="#333" stroke-width="1"/>
+  <text x="650" y="90" fill="#555" font-size="11" text-anchor="middle" letter-spacing="3">BROWSERS HANDLE SESSION STATE AUTOMATICALLY. CURL DOES NOT.</text>
+
+  <!-- ACTORS -->
+  <!-- curl actor -->
+  <rect x="100" y="115" width="180" height="44" rx="2" fill="#0f0f0f" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="190" y="134" fill="#60a5fa" font-size="10" text-anchor="middle" letter-spacing="3">ACTOR</text>
+  <text x="190" y="151" fill="#e5e5e5" font-size="14" font-weight="bold" text-anchor="middle">curl client</text>
+
+  <!-- DVWA server actor -->
+  <rect x="1020" y="115" width="180" height="44" rx="2" fill="#0f0f0f" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="1110" y="134" fill="#4ade80" font-size="10" text-anchor="middle" letter-spacing="3">ACTOR</text>
+  <text x="1110" y="151" fill="#e5e5e5" font-size="14" font-weight="bold" text-anchor="middle">DVWA server</text>
+
+  <!-- Lifelines -->
+  <line x1="190" y1="159" x2="190" y2="710" stroke="#1e3a5f" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="1110" y1="159" x2="1110" y2="710" stroke="#1a3a1a" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- ==================== STEP 1 ==================== -->
+  <text x="80" y="205" fill="#555" font-size="10" letter-spacing="3">STEP 1 — FETCH LOGIN PAGE + CSRF TOKEN</text>
+  <line x1="80" y1="212" x2="1220" y2="212" stroke="#1a1a1a" stroke-width="1"/>
+
+  <!-- Request arrow -->
+  <line x1="200" y1="240" x2="1098" y2="240" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+  <!-- Request label -->
+  <rect x="340" y="220" width="520" height="28" rx="2" fill="#0a1628" stroke="#1e3a5f" stroke-width="1"/>
+  <text x="600" y="239" fill="#60a5fa" font-size="11" text-anchor="middle">GET /login.php  →  -c cookies.txt  -s  -o login.html</text>
+
+  <!-- Response arrow -->
+  <line x1="1100" y1="285" x2="202" y2="285" stroke="#4ade80" stroke-width="1.5" marker-end="url(#arrowLeft)"/>
+  <!-- Response label -->
+  <rect x="340" y="265" width="520" height="28" rx="2" fill="#0a1a0a" stroke="#1a3a1a" stroke-width="1"/>
+  <text x="600" y="284" fill="#4ade80" font-size="11" text-anchor="middle">200 OK  →  HTML body with hidden CSRF token field</text>
+
+  <!-- Step 1 side callout -->
+  <rect x="820" y="303" width="380" height="75" rx="2" fill="#0d0d0d" stroke="#222" stroke-width="1"/>
+  <text x="835" y="323" fill="#fbbf24" font-size="10" letter-spacing="2">WHAT TO EXTRACT</text>
+  <text x="835" y="340" fill="#888" font-size="11">grep user_token login.html</text>
+  <text x="835" y="355" fill="#60a5fa" font-size="10">&lt;input type='hidden' name='user_token'</text>
+  <text x="835" y="370" fill="#60a5fa" font-size="10">      value='8b9d5057c794...' /&gt;</text>
+
+  <!-- Step 1 left note -->
+  <rect x="100" y="303" width="280" height="75" rx="2" fill="#0d0d0d" stroke="#222" stroke-width="1"/>
+  <text x="115" y="323" fill="#fbbf24" font-size="10" letter-spacing="2">COOKIES WRITTEN</text>
+  <text x="115" y="340" fill="#888" font-size="11">-c cookies.txt creates file</text>
+  <text x="115" y="355" fill="#888" font-size="11">Server sends PHPSESSID</text>
+  <text x="115" y="370" fill="#888" font-size="11">curl stores it automatically</text>
+
+  <!-- ==================== STEP 2 ==================== -->
+  <text x="80" y="418" fill="#555" font-size="10" letter-spacing="3">STEP 2 — AUTHENTICATE WITH CREDENTIALS + TOKEN</text>
+  <line x1="80" y1="425" x2="1220" y2="425" stroke="#1a1a1a" stroke-width="1"/>
+
+  <!-- Request arrow -->
+  <line x1="200" y1="453" x2="1098" y2="453" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowRightY)"/>
+  <!-- Request label -->
+  <rect x="280" y="433" width="640" height="28" rx="2" fill="#1a1500" stroke="#3a3000" stroke-width="1"/>
+  <text x="600" y="452" fill="#fbbf24" font-size="11" text-anchor="middle">POST /login.php  →  -c -b cookies.txt  -d "username=admin&amp;password=password&amp;user_token=..."</text>
+
+  <!-- Response arrow -->
+  <line x1="1100" y1="498" x2="202" y2="498" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowLeftY)"/>
+  <!-- Response label -->
+  <rect x="280" y="478" width="640" height="28" rx="2" fill="#1a1500" stroke="#3a3000" stroke-width="1"/>
+  <text x="600" y="497" fill="#fbbf24" font-size="11" text-anchor="middle">302 Found  →  Location: index.php  |  Set-Cookie: PHPSESSID (updated)</text>
+
+  <!-- Step 2 callout -->
+  <rect x="100" y="518" width="480" height="80" rx="2" fill="#0d0d0d" stroke="#222" stroke-width="1"/>
+  <text x="115" y="536" fill="#fbbf24" font-size="10" letter-spacing="2">FLAGS EXPLAINED</text>
+  <text x="115" y="558" fill="#888" font-size="11">-c cookies.txt   →  write new/updated cookies to file</text>
+  <text x="115" y="575" fill="#888" font-size="11">-b cookies.txt   →  send existing cookies with request</text>
+  <text x="115" y="592" fill="#888" font-size="11">-d "..."         →  POST body (form data)</text>
+
+  <rect x="620" y="518" width="580" height="80" rx="2" fill="#1a0d0d" stroke="#3a1a1a" stroke-width="1"/>
+  <text x="635" y="536" fill="#ef4444" font-size="10" letter-spacing="2">⚠  CSRF REQUIRED</text>
+  <text x="635" y="558" fill="#888" font-size="11">DVWA rejects login without valid user_token.</text>
+  <text x="635" y="575" fill="#888" font-size="11">Token is tied to session — fetch fresh each time.</text>
+  <text x="635" y="592" fill="#888" font-size="11">Stale or missing token → auth fails silently.</text>
+
+  <!-- ==================== STEP 3 ==================== -->
+  <text x="80" y="635" fill="#555" font-size="10" letter-spacing="3">STEP 3 — ACCESS PROTECTED RESOURCE</text>
+  <line x1="80" y1="642" x2="1220" y2="642" stroke="#1a1a1a" stroke-width="1"/>
+
+  <!-- Request arrow -->
+  <line x1="200" y1="668" x2="1098" y2="668" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowRightG)"/>
+  <rect x="380" y="648" width="440" height="28" rx="2" fill="#120d1a" stroke="#2a1a3a" stroke-width="1"/>
+  <text x="600" y="667" fill="#a78bfa" font-size="11" text-anchor="middle">GET /index.php  →  -b cookies.txt  (authenticated session)</text>
+
+  <!-- Response arrow -->
+  <line x1="1100" y1="710" x2="202" y2="710" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrowLeftG)"/>
+  <rect x="380" y="690" width="440" height="28" rx="2" fill="#1a0d0d" stroke="#2a1a1a" stroke-width="1"/>
+  <text x="600" y="709" fill="#f87171" font-size="11" text-anchor="middle">200 OK  →  DVWA dashboard HTML (authenticated)</text>
+
+  <!-- Footer -->
+  <line x1="80" y1="738" x2="1220" y2="738" stroke="#222" stroke-width="1"/>
+  <text x="80" y="758" fill="#333" font-size="10" letter-spacing="2">CURL METHODOLOGY PT.1 — OBSERVATION</text>
+  <text x="1220" y="758" fill="#333" font-size="10" text-anchor="end" letter-spacing="2">MODULE 3 — DVWA SESSION MANAGEMENT</text>
+
+  <!-- Step numbers -->
+  <circle cx="190" cy="240" r="12" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+  <text x="190" y="245" fill="#60a5fa" font-size="11" font-weight="bold" text-anchor="middle">1</text>
+
+  <circle cx="190" cy="453" r="12" fill="#3a3000" stroke="#fbbf24" stroke-width="1"/>
+  <text x="190" y="458" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle">2</text>
+
+  <circle cx="190" cy="668" r="12" fill="#1a0d2a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="190" y="673" fill="#a78bfa" font-size="11" font-weight="bold" text-anchor="middle">3</text>
+</svg>

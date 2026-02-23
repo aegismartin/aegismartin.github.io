@@ -9,6 +9,12 @@
     background: none;
 }
 
+.hero-image img {
+    border-radius: 0;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 14%);
+    mask-image: linear-gradient(to top, transparent 0%, black 14%);
+}
+
 /* ── ABOUT SECTION ──────────────────────────────────────────── */
 .about {
     position: relative;

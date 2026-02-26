@@ -383,8 +383,8 @@
                 <span class="title-line"></span>
             </h2>
             <div class="contact-form-wrapper">
-                <form action="https://formspree.io/f/mqedkvbp" method="POST" class="contact-form">
-                    <input type="hidden" name="_next" value="https://aegismartin.com/thankyou.html">
+                <!-- action/method removed — JS handles submission via Cloudflare Worker -->
+                <form id="contact-form" class="contact-form">
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" required placeholder="Your name">
@@ -423,5 +423,9 @@
     <script data-cfasync="false" src="assets/js/particles.js"></script>
     <script data-cfasync="false" src="assets/js/script.js"></script>
     <script data-cfasync="false" src="assets/js/nav.js"></script>
+    <script data-cfasync="false" src="assets/js/contact_form.js"></script>
+
+
+
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
-    <link rel="icon" href="favicon.ico">   
+    <link rel="icon" href="favicon.ico">
     <title>AegisCLI - Modular Recon Framework | Aegis Martin</title>
     <meta name="description" content="AegisCLI is a lightweight recon framework designed to eliminate tool-juggling hell. Native implementations with consistent CLI patterns.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,7 @@
         <div class="animated-bg"></div>
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-tag">VERSION 0.3.1 ALPHA</div>
+                <div class="hero-tag">VERSION 0.4.0 ALPHA</div>
                 <h1 class="hero-title">
                     <span class="glitch-text" data-text="AegisCLI">AegisCLI</span>
                     Modular Recon Framework
@@ -105,7 +105,7 @@
                                 </div>
                                 <h4>aegiscli/cli</h4>
                             </div>
-                            <p>Central entry point responsible for command routing, argument parsing, and global flag resolution. Delegates to the appropriate tool module based on the <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">aegiscli &lt;module&gt; &lt;submodule&gt; [flags] &lt;target&gt;</code> pattern without carrying any state of its own.</p>
+                            <p>Central entry point responsible for command routing, argument parsing, and global flag resolution. Routes through <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">Profiler_Selector</code> rather than instantiating tool classes directly, following the <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">aegiscli &lt;module&gt; &lt;submodule&gt; [flags] &lt;target&gt;</code> pattern without carrying any state of its own.</p>
                         </div>
                         <div class="structure-item">
                             <div class="structure-header">
@@ -118,7 +118,7 @@
                                 </div>
                                 <h4>core/utils</h4>
                             </div>
-                            <p>Runtime services shared across every module. <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">logger.py</code> handles timestamped file logging to <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">~/.aegiscli/logs</code>, while <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">flagger.py</code> manages the verbose mode state so any module can query it without coupling to the CLI layer.</p>
+                            <p>Runtime services shared across every module. <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">logger.py</code> handles timestamped logging to <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">~/.aegiscli/logs</code> — JSON is the ground truth format when <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">--log</code> is active. <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">exporter.py</code> builds structured JSON envelopes for all tool output, while <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">flagger.py</code> manages verbose mode state without coupling to the CLI layer.</p>
                         </div>
                         <div class="structure-item">
                             <div class="structure-header">
@@ -192,6 +192,16 @@
                                         </svg>
                                     </div>
                                     <div class="util-label">Formatter</div>
+                                </div>
+                                <div class="arch-node arch-util">
+                                    <div class="util-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                                            <path d="M9 13h6M9 17h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                            <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    </div>
+                                    <div class="util-label">Exporter</div>
                                 </div>
                             </div>
                         </div>
@@ -357,9 +367,9 @@
                     <h3 class="feature-title">Framework Capabilities</h3>
                     <ul class="feature-list">
                         <li>Verbose Mode (-v) for step-by-step execution</li>
-                        <li>Timestamped logging (--log) to ~/.aegiscli/logs</li>
+                        <li>Structured JSON logging (--log) to ~/.aegiscli/logs</li>
                         <li>Centralized color-coded terminal output</li>
-                        <li>Strict modular architecture for maintainability</li>
+                        <li>ABC-enforced submodule contracts — fetch(), display(), export(), result()</li>
                         <li>Packaged as pip-installable Python project</li>
                     </ul>
                 </div>
@@ -373,9 +383,9 @@
                     <h3 class="feature-title">Design Principles</h3>
                     <ul class="feature-list">
                         <li>No global mutable state</li>
-                        <li>Isolated tool modules with uniform interfaces</li>
-                        <li>High readability and maintainability</li>
-                        <li>Predictable output for automation</li>
+                        <li>Isolated tool modules with uniform ABC interfaces</li>
+                        <li>Errors always visible — never silently swallowed</li>
+                        <li>Predictable output for automation and scripting</li>
                         <li>Consistent CLI patterns across all modules</li>
                     </ul>
                 </div>
@@ -547,13 +557,13 @@
                             <li>Add security analysis flags for Web Fingerprinter</li>
                             <li>Detect missing HSTS, insecure cookies, and misconfigurations</li>
                             <li>Additional OSINT sources for Profiler module</li>
-                            <li>Enhanced error handling and edge case coverage</li>
+                            <li><s>Enhanced error handling and edge case coverage</s></li>
                         </ul>
                         <div class="roadmap-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 65%"></div>
+                                <div class="progress-fill" style="width: 80%"></div>
                             </div>
-                            <span class="progress-label">65% Complete</span>
+                            <span class="progress-label">80% Complete</span>
                         </div>
                     </div>
                 </div>
@@ -577,9 +587,9 @@
                         </ul>
                         <div class="roadmap-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 25%"></div>
+                                <div class="progress-fill" style="width: 35%"></div>
                             </div>
-                            <span class="progress-label">25% Complete</span>
+                            <span class="progress-label">35% Complete</span>
                         </div>
                     </div>
                 </div>

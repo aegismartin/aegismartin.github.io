@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">   
+    <meta name="color-scheme" content="dark">
     <meta name="description" content="Aegis Martin — cybersecurity practitioner and developer from Vanadzor. Security tools, technical writeups, and practical insights on offensive and defensive security.">
-    <link rel="icon" href="favicon.ico">   
+    <link rel="icon" href="favicon.ico">
     <title>Aegis Martin - Cybersecurity Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +133,7 @@
             <div class="cli-content">
                 <div class="cli-info">
                     <h2 class="section-title-left">
-                        AegisCLI - Version 0.4.0 Alpha
+                        AegisCLI - Version 0.5.0 Alpha
                         <span class="alpha-tag">ALPHA</span>
                     </h2>
                     <p class="cli-description">AegisCLI is a lightweight recon framework designed to eliminate tool-juggling hell. Native implementations with consistent CLI patterns across profiling, scanning, enumeration, and analysis - built for chaining, automation, and maintainability.</p>
@@ -171,12 +171,18 @@
                     <div class="terminal-body">
                         <div class="terminal-line">
                             <span class="prompt">$</span>
-                            <span>aegis profiler web -v --log example.com</span>
+                            <span>aegiscli profiler web -v --log example.com</span>
                         </div>
                         <div class="terminal-line output">✓ Captured 4 connection properties</div>
                         <div class="terminal-line output">▸ Filtering 7 headers against 19 patterns</div>
                         <div class="terminal-line output">✓ TLS handshake completed (0.416s)</div>
                         <div class="terminal-line output">✓ Extracted 4 relevant certificate fields</div>
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span>aegiscli scanner port --ports 80,443 example.com</span>
+                        </div>
+                        <div class="terminal-line output">✓ 80/tcp open http</div>
+                        <div class="terminal-line output">✓ 443/tcp open https</div>
                         <div class="terminal-line">
                             <span class="prompt">$</span>
                             <span class="cursor">_</span>

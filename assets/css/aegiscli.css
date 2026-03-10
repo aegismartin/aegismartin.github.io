@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   AEGISCLI.CSS — AegisCLI page specific styles
-   Aegis Martin Portfolio
-   ═══════════════════════════════════════════════════════════ */
+ *  AEGISCLI.CSS — AegisCLI page specific styles
+ *  Aegis Martin Portfolio
+ *  ═══════════════════════════════════════════════════════════ */
 
 
 /* ── HERO ────────────────────────────────────────────────────── */
@@ -15,8 +15,8 @@
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at 20% 50%, rgba(168,85,247,0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(124,58,237,0.15) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(168,85,247,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(124,58,237,0.15) 0%, transparent 50%);
         animation: floatBg 20s ease-in-out infinite;
         z-index: -1;
     }
@@ -308,8 +308,9 @@
     box-shadow: 0 10px 40px var(--accent-purple-glow);
 }
 
-.arch-module.active  { border-color: var(--accent-green); }
-.arch-module.planned { border-color: var(--border-color); opacity: 0.7; }
+.arch-module.active      { border-color: var(--accent-green); }
+.arch-module.planned     { border-color: var(--border-color); opacity: 0.7; }
+.arch-module.in-progress { border-color: var(--accent-orange); box-shadow: 0 0 18px rgba(245, 158, 11, 0.2); }
 
 .module-header {
     display: flex;
@@ -360,12 +361,18 @@
     background: var(--text-muted);
 }
 
-.module-status.active  { color: var(--accent-green); }
-.module-status.planned { color: var(--text-muted);   }
+.module-status.active      { color: var(--accent-green); }
+.module-status.planned     { color: var(--text-muted);   }
+.module-status.in-progress { color: var(--accent-orange); }
 
 .module-status.active .status-dot {
     background: var(--accent-green);
     animation: pulse-dot-green 2s ease-in-out infinite;
+}
+
+.module-status.in-progress .status-dot {
+    background: var(--accent-orange);
+    animation: pulse-dot-yellow 2s ease-in-out infinite;
 }
 
 .module-subtools {
@@ -601,7 +608,36 @@
 .output-icon          { font-size: 0.9rem; }
 .output-icon.success  { color: var(--accent-green);  }
 .output-icon.warning  { color: var(--accent-orange); }
+.output-icon.info     { color: var(--accent-blue);   }
+.output-icon.muted    { color: var(--text-muted);    }
 .output-text          { color: var(--text-secondary); }
+
+.card-glow--yellow {
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+}
+
+.feature-icon--yellow svg {
+    color: var(--accent-orange);
+}
+
+.feature-badge-new {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.5rem;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid var(--accent-orange);
+    border-radius: 4px;
+    color: var(--accent-orange);
+    vertical-align: middle;
+    margin-left: 0.5rem;
+}
+
+.subtool-planned {
+    opacity: 0.45;
+    font-style: italic;
+}
 
 /* ── USAGE ───────────────────────────────────────────────────── */
 .usage {
@@ -1261,6 +1297,11 @@
     50%       { opacity: 0.7; box-shadow: 0 0 0 6px transparent; }
 }
 
+@keyframes pulse-dot-yellow {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-orange);       }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 6px transparent; }
+}
+
 @keyframes pulse-marker {
     0%   { transform: scale(0.5); opacity: 1; }
     100% { transform: scale(1.5); opacity: 0; }
@@ -1287,9 +1328,9 @@
 }
 
 /* ════════════════════════════════════════════════════════════
-   RESPONSIVE — AEGISCLI PAGE (aegiscli.css)
-   Breakpoints: 1280 | 1024 | 768 | 640 | 480 | 380
-   ════════════════════════════════════════════════════════════ */
+ *  RESPONSIVE — AEGISCLI PAGE (aegiscli.css)
+ *  Breakpoints: 1280 | 1024 | 768 | 640 | 480 | 380
+ *  ════════════════════════════════════════════════════════════ */
 
 /* ── 1280px : Large desktop ───────────────────────────────── */
 @media (max-width: 1280px) {

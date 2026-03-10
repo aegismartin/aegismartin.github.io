@@ -42,7 +42,7 @@
         <div class="animated-bg"></div>
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-tag">VERSION 0.4.0 ALPHA</div>
+                <div class="hero-tag">VERSION 0.5.0 ALPHA</div>
                 <h1 class="hero-title">
                     <span class="glitch-text" data-text="AegisCLI">AegisCLI</span>
                     Modular Recon Framework
@@ -143,7 +143,7 @@
                                 </div>
                                 <h4>aegiscli/tools</h4>
                             </div>
-                            <p>All recon capability lives here, fully isolated under <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">tools/&lt;module&gt;/&lt;submodule&gt;</code>. Currently active: profiler/ with WHOIS, DNS, and Web submodules. Planned: scanner/, enumerator/, analyser/, and injector/ — each independently developed with no cross-module dependencies.</p>
+                            <p>All recon capability lives here, fully isolated under <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">tools/&lt;module&gt;/&lt;submodule&gt;</code>. Currently active: profiler/ with WHOIS, DNS, and Web submodules; scanner/ with async TCP port scanning. Planned: enumerator/, analyser/, and injector/ — each independently developed with no cross-module dependencies.</p>
                         </div>
                     </div>
                 </div>
@@ -235,7 +235,7 @@
                                     </div>
                                 </div>
 
-                                <div class="arch-node arch-module planned" data-module="scanner">
+                                <div class="arch-node arch-module in-progress" data-module="scanner">
                                     <div class="module-header">
                                         <div class="node-icon">
                                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,14 +246,14 @@
                                         </div>
                                         <div class="node-label">Scanner</div>
                                     </div>
-                                    <div class="module-status planned">
+                                    <div class="module-status in-progress">
                                         <span class="status-dot"></span>
-                                        Planned
+                                        In Progress
                                     </div>
                                     <div class="module-subtools">
-                                        <span>Ports</span>
-                                        <span>Services</span>
-                                        <span>Banners</span>
+                                        <span>Port</span>
+                                        <span class="subtool-planned">Host</span>
+                                        <span class="subtool-planned">UDP</span>
                                     </div>
                                 </div>
 
@@ -357,6 +357,24 @@
                     </ul>
                 </div>
                 <div class="feature-card" data-tilt>
+                    <div class="card-glow card-glow--yellow"></div>
+                    <div class="feature-icon feature-icon--yellow">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Scanner Module <span class="feature-badge-new">NEW</span></h3>
+                    <ul class="feature-list">
+                        <li>Async TCP connect scanning via asyncio — no external deps</li>
+                        <li>Semaphore-controlled concurrency (400 cap, 0.7s timeout)</li>
+                        <li>Default top 1024, range, or custom port list targeting</li>
+                        <li>Service name resolution from OS service database</li>
+                        <li>Verbose diagnostics — resolved IP, queue size, timing stats</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-tilt>
                     <div class="card-glow"></div>
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -415,6 +433,7 @@
                                 <button class="terminal-tab active" data-tab="whois">WHOIS</button>
                                 <button class="terminal-tab" data-tab="dns">DNS</button>
                                 <button class="terminal-tab" data-tab="web">Web</button>
+                                <button class="terminal-tab" data-tab="scanner">Scanner</button>
                             </div>
                         </div>
                         <div class="terminal-body">
@@ -490,6 +509,38 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="terminal-content" data-content="scanner">
+                                <div class="terminal-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">aegiscli scanner port -v --ports 80,443,8080 --log example.com</span>
+                                </div>
+                                <div class="terminal-output">
+                                    <div class="output-line">
+                                        <span class="output-icon info">▸</span>
+                                        <span class="output-text">Resolved example.com → 93.184.216.34</span>
+                                    </div>
+                                    <div class="output-line">
+                                        <span class="output-icon info">▸</span>
+                                        <span class="output-text">Queue: 3 ports | Concurrency: 400 | Timeout: 0.7s</span>
+                                    </div>
+                                    <div class="output-line">
+                                        <span class="output-icon success">&#10003;</span>
+                                        <span class="output-text">80/tcp   open   http</span>
+                                    </div>
+                                    <div class="output-line">
+                                        <span class="output-icon success">&#10003;</span>
+                                        <span class="output-text">443/tcp  open   https</span>
+                                    </div>
+                                    <div class="output-line">
+                                        <span class="output-icon muted">✕</span>
+                                        <span class="output-text">8080/tcp closed</span>
+                                    </div>
+                                    <div class="output-line">
+                                        <span class="output-icon success">&#10003;</span>
+                                        <span class="output-text">Logged to ~/.aegiscli/logs/scanner_port_20260310.json</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -554,16 +605,16 @@
                             <h3 class="roadmap-title">Immediate Priorities</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Add security analysis flags for Web Fingerprinter</li>
-                            <li>Detect missing HSTS, insecure cookies, and misconfigurations</li>
-                            <li>Additional OSINT sources for Profiler module</li>
-                            <li><s>Enhanced error handling and edge case coverage</s></li>
+                            <li>Give banner grabbing ability to port.py</li>
+                            <li>Scanner host.py — host discovery, ICMP ping, TCP fallback, TTL-based OS hint</li>
+                            <li>Web Fingerprinter upgrade — deeper tech stack detection, framework fingerprinting</li>
+                            <li>Scanner udp.py — UDP port scanning</li>
                         </ul>
                         <div class="roadmap-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 80%"></div>
+                                <div class="progress-fill" style="width: 85%"></div>
                             </div>
-                            <span class="progress-label">80% Complete</span>
+                            <span class="progress-label">85% Complete</span>
                         </div>
                     </div>
                 </div>
@@ -579,17 +630,17 @@
                             <h3 class="roadmap-title">Core Expansion</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Start Scanner module (ports, services, banners)</li>
-                            <li>Enumerator module with optional ffuf adapters</li>
-                            <li>Analyser module using external APIs for reconnaissance</li>
-                            <li>JSON configuration engine for persistent settings</li>
-                            <li>Tool chaining capabilities for workflow automation</li>
+                            <li>Add service discovery by banner grabbing</li>
+                            <li>Upgrade dns and whois submodules to actively interact with their discovery and dig deeper</li>
+                            <li>settings.json configuration engine — user-configurable defaults for concurrency, timeouts, output behavior, and module-specific parameters</li>
+                            <li>Enumerator module with ffuf or gobuster integration</li>
+                            <li>Analyser module — third-party API enrichment (Shodan, VirusTotal, Censys, and more)</li>
                         </ul>
                         <div class="roadmap-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 35%"></div>
+                                <div class="progress-fill" style="width: 20%"></div>
                             </div>
-                            <span class="progress-label">35% Complete</span>
+                            <span class="progress-label">20% Complete</span>
                         </div>
                     </div>
                 </div>
@@ -605,11 +656,10 @@
                             <h3 class="roadmap-title">Advanced Features</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Plugin ecosystem for community extensions</li>
-                            <li>Output profiles (Minimal / JSON / Extended)</li>
-                            <li>Unified workflow chaining and refinement</li>
+                            <li>Full blown tool chaining system</li>
                             <li>Injector module (SQLi testing, payload logic)</li>
-                            <li>Log analyser for comprehensive reporting</li>
+                            <li>Log Analyser</li>
+                            <li>Plugin ecosystem</li>
                         </ul>
                         <div class="roadmap-progress">
                             <div class="progress-bar">

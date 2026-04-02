@@ -42,7 +42,7 @@
         <div class="animated-bg"></div>
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-tag">VERSION 0.6.0 ALPHA</div>
+                <div class="hero-tag">VERSION 0.6.1 ALPHA</div>
                 <h1 class="hero-title">
                     <span class="glitch-text" data-text="AegisCLI">AegisCLI</span>
                     Modular Recon Framework
@@ -353,6 +353,7 @@
                         <li><strong>Host Discovery</strong> — ICMP echo (raw sockets, provides TTL), TCP fallback on ports 22/80/443 for no-root environments, CIDR range support, TTL-based OS fingerprinting</li>
                         <li><strong>Port Scanner</strong> — async TCP connect via asyncio, semaphore-controlled concurrency (400 cap), flexible port targeting</li>
                         <li>Banner grabbing — passive read (SSH, FTP, SMTP, Redis etc.), HTTP GET probe, SSL/TLS upgrade with SNI</li>
+                        <li><strong>Service Discovery</strong> — banner strings parsed into structured identity (protocol, software, version); included in JSON log output alongside raw banner; <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">service</code> is <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">null</code> when banner is empty or unrecognised</li>
                         <li>Two-step detection — plain TCP confirms open status, banner grab fully decoupled</li>
                         <li>Verbose diagnostics across both submodules — per-host method/result, per-port banner status</li>
                     </ul>
@@ -601,8 +602,9 @@
                             <h3 class="roadmap-title">Immediate Priorities</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Add service discovery by banner grabbing</li>
                             <li>Web Fingerprinter upgrade — deeper tech stack detection, framework fingerprinting</li>
+                            <li>Scanner udp.py — UDP port scanning</li>
+                            <li>Upgrade dns and whois submodules to actively interact with their discovery and dig deeper</li>
                         </ul>
                     </div>
                 </div>
@@ -618,8 +620,6 @@
                             <h3 class="roadmap-title">Core Expansion</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Scanner udp.py — UDP port scanning</li>
-                            <li>Upgrade dns and whois submodules to actively interact with their discovery and dig deeper</li>
                             <li>settings.json configuration engine — user-configurable defaults for concurrency, timeouts, output behavior, and module-specific parameters</li>
                             <li>Enumerator module with ffuf or gobuster integration</li>
                             <li>Analyser module (third-party API enrichment — Shodan, VirusTotal, Censys, and more)</li>

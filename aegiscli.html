@@ -42,7 +42,7 @@
         <div class="animated-bg"></div>
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-tag">VERSION 0.6.1 ALPHA</div>
+                <div class="hero-tag">VERSION 0.7.0 ALPHA</div>
                 <h1 class="hero-title">
                     <span class="glitch-text" data-text="AegisCLI">AegisCLI</span>
                     Modular Recon Framework
@@ -348,7 +348,7 @@
                             <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
                         </svg>
                     </div>
-                    <h3 class="feature-title">Scanner Module <span class="feature-badge-new">NEW</span></h3>
+                    <h3 class="feature-title">Scanner Module</h3>
                     <ul class="feature-list">
                         <li><strong>Host Discovery</strong> — ICMP echo (raw sockets, provides TTL), TCP fallback on ports 22/80/443 for no-root environments, CIDR range support, TTL-based OS fingerprinting</li>
                         <li><strong>Port Scanner</strong> — async TCP connect via asyncio, semaphore-controlled concurrency (400 cap), flexible port targeting</li>
@@ -366,13 +366,14 @@
                             <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <h3 class="feature-title">Profiler Module</h3>
+                    <h3 class="feature-title">Profiler Module <span class="feature-badge-new">NEW</span></h3>
                     <ul class="feature-list">
                         <li>WHOIS / RDAP Lookup with intelligent fallback</li>
                         <li>DNS Resolver (A/AAAA, MX, TXT, NS, CNAME, SOA)</li>
                         <li>Reverse DNS (PTR) Lookups</li>
                         <li>Web Fingerprinter with SSL/TLS inspection</li>
                         <li>HTTP header profiling and cookie parsing</li>
+                        <li><strong>Response body analysis</strong> — meta tag extraction, framework path signature matching, HTML root attribute detection (Angular, React SSR); <code style="font-family:'Fira Code',monospace;color:var(--accent-purple);font-size:0.85em">body_signals</code> included in JSON output</li>
                     </ul>
                 </div>
                 <div class="feature-card" data-tilt>
@@ -602,7 +603,7 @@
                             <h3 class="roadmap-title">Immediate Priorities</h3>
                         </div>
                         <ul class="roadmap-list">
-                            <li>Web Fingerprinter upgrade — deeper tech stack detection, framework fingerprinting</li>
+                            <li>Web Fingerprinter upgrade — deeper tech stack detection, framework fingerprinting (Currently in Progress)</li>
                             <li>Scanner udp.py — UDP port scanning</li>
                             <li>Upgrade dns and whois submodules to actively interact with their discovery and dig deeper</li>
                         </ul>
